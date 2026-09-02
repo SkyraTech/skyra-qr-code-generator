@@ -1,0 +1,31 @@
+{
+  "name": "@skyra/api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "NestJS + Fastify authoritative backend API for SkyraQR",
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "node dist/main",
+    "start:prod": "node dist/main",
+    "lint": "eslint src/",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.4.1",
+    "@nestjs/core": "^10.4.1",
+    "@nestjs/platform-fastify": "^10.4.1",
+    "@skyra/shared": "workspace:*",
+    "fastify": "^4.28.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.4.5",
+    "@nestjs/schematics": "^10.1.4",
+    "@skyra/eslint-config": "workspace:*",
+    "@skyra/typescript-config": "workspace:*",
+    "@types/node": "^20.14.12",
+    "typescript": "^5.5.4"
+  }
+}

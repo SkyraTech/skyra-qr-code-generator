@@ -1,0 +1,21 @@
+{
+  "name": "@skyra/shared",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared types and constants for SkyraQR monorepo",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src/",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@skyra/eslint-config": "workspace:*",
+    "@skyra/typescript-config": "workspace:*",
+    "tsup": "^8.3.5",
+    "typescript": "^5.5.4"
+  }
+}

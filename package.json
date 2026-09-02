@@ -1,0 +1,25 @@
+{
+  "name": "skyra-qr-code-generator",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SkyraQR — Enterprise B2B QR Code SaaS Platform Monorepo",
+  "author": "Skyra Tech",
+  "license": "MIT",
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=@skyra/web",
+    "dev:api": "turbo dev --filter=@skyra/api",
+    "build": "turbo build",
+    "build:web": "turbo build --filter=@skyra/web",
+    "build:api": "turbo build --filter=@skyra/api",
+    "lint": "turbo lint",
+    "check-types": "turbo check-types",
+    "clean": "turbo clean"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "turbo": "^2.4.4",
+    "typescript": "^5.5.4"
+  }
+}

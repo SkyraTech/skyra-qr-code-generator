@@ -1,0 +1,12 @@
+{
+  "name": "@skyra/eslint-config",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared ESLint configurations for SkyraQR monorepo",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "nextjs.js",
+    "nestjs.js"
+  ]
+}
