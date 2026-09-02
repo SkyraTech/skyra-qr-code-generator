@@ -35,6 +35,7 @@ The architecture is founded upon five core engineering principles:
   - [3.5 The Shared Domain Services Principle (REST + MCP)](#35-the-shared-domain-services-principle-rest--mcp)
   - [3.6 Database & Storage Authority Model](#36-database--storage-authority-model)
   - [3.7 Synchronous vs. Durable Asynchronous Workloads](#37-synchronous-vs-durable-asynchronous-workloads)
+  - [3.8 Frontend Design System & Reusable Component Architecture](#38-frontend-design-system--reusable-component-architecture)
 - [4. Dynamic QR Redirect Architecture](#4-dynamic-qr-redirect-architecture)
   - [4.1 Edge POP Resolution Flow & Latency Budget](#41-edge-pop-resolution-flow--latency-budget)
   - [4.2 Multi-Tier Caching Architecture (L1, L2, L3)](#42-multi-tier-caching-architecture-l1-l2-l3)
@@ -407,6 +408,134 @@ sequenceDiagram
         DB-->>Worker: Transaction Commit Success
         Worker->>Stream: XACK stream:scans:raw analytics-workers 171400-0
     end
+```
+
+### 3.8 Frontend Design System & Reusable Component Architecture
+
+SkyraQR implements a centralized, composable design system engineered to ensure that Platform Admin pages, Workspace Admin consoles, Customer Dashboards, CRUD tables, forms, modals, analytics, settings, and future QR management interfaces can be constructed primarily by composing reusable primitives without duplicating styling or data handling logic.
+
+```mermaid
+flowchart TD
+    subgraph Layers["Frontend Architectural Composition Hierarchy"]
+        Page["Page Component (apps/web/src/app/*)"]
+        Feature["Feature Module (apps/web/src/features/*)"]
+        Reusable["Reusable Design System Components (apps/web/src/components/*)"]
+        APILayer["API Service Boundary (apps/web/src/services/api/client.ts)"]
+        Backend["NestJS Authoritative API (/api/v1/*)"]
+    end
+
+    Page --> Feature
+    Feature --> Reusable
+    Feature --> APILayer
+    Reusable --> APILayer
+    APILayer --> Backend
+
+    Reusable -.->|STRICTLY FORBIDDEN| DirectDB[("PostgreSQL / Supabase")]
+```
+
+#### 1. Design Principles
+- **Visual Identity:** Premium, modern, technical, minimal, and B2B SaaS oriented.
+- **Data-Dense Yet Uncrowded:** Engineered for high information density (analytics tables, metrics, logs) without visual clutter.
+- **Design Guardrails:** Strictly avoid excessive gradients, overly rounded cards, heavy decorative animations, neon colors, and hardcoded inline color values.
+
+#### 2. Branding Policy & Decoupling
+- **Internal Codename:** `SkyraQR` (parent: `Skyra Tech`; commercial name: `TBD`).
+- **Decoupled Architecture:** Brand tokens, titles, and logos are centralized in `apps/web/src/config/site.ts`. Changing the commercial brand name requires zero component code rewrites.
+
+#### 3. Typography Architecture
+- **Primary Interface Font:** **Inter** (`font-sans`) applied across all dashboards, forms, navigation, and text bodies.
+- **Technical & Data Monospace Font:** **JetBrains Mono** (`font-mono-data`) with tabular numerals (`tabular-nums`) applied specifically to API keys, short codes (`skyra.link/x7k9p2`), UUIDs, database timestamps, curl commands, and telemetry metrics.
+
+#### 4. Semantic Color System & HSL Design Tokens
+Colors are defined using CSS custom properties in HSL format in `apps/web/src/app/globals.css` and bound through `apps/web/tailwind.config.ts`:
+- **Primary Brand Family:** Indigo / Violet (`--primary: 243 75% 59%` in light, `239 84% 67%` in dark).
+- **Technical Accent:** Cyan (`--accent: 188 86% 53%`).
+- **Neutrals:** Slate (`--background`, `--foreground`, `--card`, `--muted`, `--border`, `--input`, `--ring`).
+- **Semantic Feedback:**
+  - Success $\rightarrow$ Emerald (`--success: 158 64% 42%`)
+  - Warning $\rightarrow$ Amber (`--warning: 38 92% 50%`)
+  - Error / Destructive $\rightarrow$ Red (`--destructive: 0 84% 60%`)
+  - Informational $\rightarrow$ Blue (`--info: 217 91% 60%`)
+
+#### 5. Theme System (Light, Dark, System)
+Managed via `ThemeProvider` (`apps/web/src/providers/theme-provider.tsx`) and the `useTheme` hook:
+- Class-based theme toggle (`.dark` on `<html>`).
+- Stored in `localStorage` under `skyra_theme`.
+- Components consume semantic tokens (e.g. `bg-card text-card-foreground border-border`), guaranteeing that zero components require separate light and dark code branches.
+
+#### 6. Reusable Component Architecture
+Organized strictly by primitive concern in `apps/web/src/components/`:
+- `ui/`: Atoms (Button, Input, Textarea, Select, MultiSelect, Checkbox, Switch, DatePicker, Badge, Avatar, Tooltip, DropdownMenu, Tabs, Card, Separator, Skeleton, Progress).
+- `layout/`: Structural shells (AppShell, Sidebar, TopNavigation, PageHeader, PageContainer, Section, StatsCard, DashboardGrid).
+- `forms/`: FormField, FormLabel, FormDescription, FormMessage, and the generic `CrudForm` pattern.
+- `tables/`: Generic headless DataTable, DataTableToolbar, DataTablePagination, DataTableColumnHeader, DataTableRowActions.
+- `dialogs/`: Modal, Dialog, Drawer, ConfirmDialog, and DeleteConfirmDialog.
+- `feedback/`: Toast, Alert, LoadingState, EmptyState, ErrorState.
+- `navigation/`: Breadcrumbs, NavTabs.
+- `data-display/`: CodeBlock, StatusDot.
+
+#### 7. Generic DataTable System Architecture
+The `DataTable<TData>` component (`apps/web/src/components/tables/data-table.tsx`) is 100% generic and decoupled from database models:
+- **Generic Row Types:** Operates over any typed row schema `<TData>`.
+- **Column Definitions:** Supports `ColumnDef<TData>` with custom cell renderers, sort toggles, and width hints.
+- **Sorting & Filtering:** Client-side sorting and search for small tables; server-side sorting/filtering via callbacks for large datasets.
+- **Pagination:** Responsive `DataTablePagination` with rows-per-page selection and record range indicators.
+- **Bulk Operations:** Checkbox selection header with animated bulk action bar.
+- **Row Actions:** Unified `DataTableRowActions` dropdown (View, Edit, Delete).
+
+#### 8. Schema-Driven Form Architecture & CRUD Pattern
+- **Unified Create / Edit Pattern:** The `CrudForm` component (`apps/web/src/components/forms/crud-form.tsx`) handles `create`, `edit`, and `read-only` modes within a single component.
+- **Validation:** Integrates schema-based validation (Zod) with field-level error messages (`FormMessage`) and server-side error banners (`Alert`).
+- **Clean Boundary:** Forms invoke domain service functions and never contain direct database or SQL logic.
+
+#### 9. Dialog & Confirmation System
+- **Accessible Primitives:** Backdrop blur, Escape key dismissal, and focus trapping.
+- **Two-Step Destructive Deletion:** `DeleteConfirmDialog` prominently indicates destructive consequences with item name confirmation before executing API mutations.
+- **Slide-Over Drawers:** `Drawer` provides right-side inspection panels for detailed settings.
+
+#### 10. Dashboard Layout Architecture
+- **AppShell:** Responsive three-tier layout with collapsible sidebar and sticky top navigation.
+- **PageHeader:** Standardized title, badge, breadcrumbs, and primary action buttons.
+- **StatsCard:** Standardized KPI metric display with percentage delta and trend indicators.
+
+#### 11. Accessibility (WCAG 2.2 AA Target)
+- Visible focus rings (`focus-visible:ring-2 focus-visible:ring-ring`).
+- ARIA roles: `role="dialog"`, `role="switch"`, `role="checkbox"`, `role="alert"`, `role="tablist"`.
+- Keyboard navigation: Full support for Tab, Escape, Enter, and Spacebar interactions.
+
+#### 12. Responsive Design Standards
+- **Breakpoints:** Mobile (`<640px`), Tablet (`640px–1024px`), Desktop (`>1024px`).
+- **Table Handling:** Horizontal overflow scroll with minimum cell widths, sticky headers, and responsive action columns.
+- **Collapsible Navigation:** Sidebar transforms into an off-canvas drawer on mobile devices.
+
+#### 13. State Management Boundaries
+- **Server State (TanStack Query):** Caching, background refetching, and query invalidation for all API entities.
+- **Local UI State (Zustand):** Strictly limited to ephemeral client concerns (sidebar collapse, active modal IDs).
+- **Prohibition:** Zustand must never duplicate server entity caching.
+
+#### 14. API Communication Boundary
+- All frontend communication routes through `apps/web/src/services/api/client.ts`.
+- Structured `ApiError` class with HTTP status codes and error payloads.
+- **Strict Prohibition:** Direct database queries, Prisma client usage, and direct Supabase database calls are strictly forbidden in the frontend.
+
+#### 15. Component Naming Conventions
+- **Files:** `kebab-case.tsx` (e.g. `data-table.tsx`, `confirm-dialog.tsx`).
+- **Components:** `PascalCase` exports (e.g. `DataTable`, `ConfirmDialog`).
+- **Hooks:** `use-camelCase.ts` (e.g. `use-toast.ts`, `use-theme.ts`).
+
+#### 16. Directory Structure
+```
+apps/web/src/
+├── app/                  # Next.js App Router routes
+├── components/           # Reusable design system primitives
+├── features/             # Business feature modules (composed from primitives)
+├── hooks/                # Custom React hooks
+├── lib/                  # Utilities (cn, formatters)
+├── providers/            # React context providers (Theme, Query, Toast)
+├── services/             # Centralized API client and services
+├── stores/               # Zustand local UI state
+├── types/                # Shared frontend TypeScript interfaces
+└── config/               # Site configuration and design token constants
 ```
 
 ---

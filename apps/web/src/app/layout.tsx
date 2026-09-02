@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { PROJECT_CODENAME, PARENT_COMPANY } from '@skyra/shared';
+import { ThemeProvider } from '@/providers/theme-provider';
+import { QueryProvider } from '@/providers/query-provider';
+import { ToastProvider } from '@/providers/toast-provider';
 
 export const metadata: Metadata = {
   title: `${PROJECT_CODENAME} — Enterprise B2B QR SaaS Platform`,
@@ -16,9 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="antialiased selection:bg-indigo-500 selection:text-white">
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className="antialiased selection:bg-primary selection:text-primary-foreground min-h-screen">
+        <ThemeProvider defaultTheme="system" storageKey="skyra_theme">
+          <QueryProvider>
+            <ToastProvider>
+              {children}
+            </ToastProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

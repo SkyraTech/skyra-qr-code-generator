@@ -29,6 +29,7 @@ Every phase specifies concrete deliverables, cross-functional tasks (backend, fr
   - [1.5 Request Context & Distributed Tracing](#15-request-context--distributed-tracing)
 - [2. Phased Development Dependency Graph](#2-phased-development-dependency-graph)
 - [3. Phase 0 — Engineering Foundation & Tooling Scaffolding](#phase-0--engineering-foundation--tooling-scaffolding)
+- [3b. Phase 0B — Frontend Design System & Reusable Component Architecture](#phase-0b--frontend-design-system--reusable-component-architecture)
 - [4. Phase 1 — Database Foundation & Migrations (57 Tables)](#phase-1--database-foundation--migrations-57-tables)
 - [5. Phase 2 — Authentication, Sessions & MFA](#phase-2--authentication-sessions--mfa)
 - [6. Phase 3 — Workspace Tenancy & Customer RBAC](#phase-3--workspace-tenancy--customer-rbac)
@@ -108,13 +109,15 @@ Every inbound request (REST or MCP) must generate or propagate a `request_id` (U
 
 ```mermaid
 flowchart TD
-    P0[Phase 0: Engineering Foundation] --> P1[Phase 1: Database Foundation - 57 Tables]
+    P0[Phase 0: Engineering Foundation] --> P0B[Phase 0B: Frontend Design System]
+    P0 --> P1[Phase 1: Database Foundation - 57 Tables]
     P1 --> P2[Phase 2: Authentication & Sessions]
     P2 --> P3[Phase 3: Workspace & RBAC]
     P3 --> P4[Phase 4: QR Core Engine]
     P4 --> P5[Phase 5: Dynamic Routing Engine]
     P5 --> P6[Phase 6: Analytics & Telemetry Pipeline]
-    P6 --> P7[Phase 7: Customer Dashboard]
+    P0B --> P7[Phase 7: Customer Dashboard]
+    P6 --> P7
     P7 --> P8[Phase 8: Subscriptions & Billing]
     P8 --> P9[Phase 9: REST API Developer Platform]
     P9 --> P10[Phase 10: MCP Server & Delegated Credentials]
@@ -162,6 +165,48 @@ Establish the monorepo architecture, developer tooling, linting, formatting, con
   6. Local development environment works end-to-end.
   7. GitHub Actions CI pipeline passes with zero warnings.
   8. **No frontend direct database access exists.**
+
+---
+
+## Phase 0B — Frontend Design System & Reusable Component Architecture
+
+### Objective
+Establish the centralized, accessible, responsive design system and reusable UI component architecture so future dashboards, admin consoles, CRUD tables, forms, and dialogs can be composed primarily from reusable primitives without duplicating styling or data handling logic.
+
+- **Prerequisites:** Phase 0 complete.
+- **Dependencies:** Phase 0.
+- **Design System & Token Architecture:**
+  - Centralize CSS variables in HSL format in `globals.css` with dark mode support.
+  - Configure brand color family (Indigo/Violet), technical accent (Cyan), neutrals (Slate), and semantic feedback (Emerald, Amber, Red, Blue) in `tailwind.config.ts`.
+  - Establish typography hierarchy: Inter for interface text, JetBrains Mono for data/monospace tokens.
+  - Implement `ThemeProvider` (`light`, `dark`, `system`) with localStorage persistence and zero flash.
+- **Reusable Component Primitives:**
+  - Build core atoms in `components/ui/`: Button, Input, Textarea, Select, MultiSelect, Checkbox, Switch, DatePicker, Badge, Avatar, Tooltip, DropdownMenu, Tabs, Card, Separator, Skeleton, Progress.
+  - Build layout shells in `components/layout/`: AppShell, Sidebar, TopNavigation, PageHeader, PageContainer, Section, StatsCard, DashboardGrid.
+  - Build feedback states in `components/feedback/`: ToastProvider (`useToast`), Alert, LoadingState, EmptyState, ErrorState.
+  - Build dialogs in `components/dialogs/`: Modal, Dialog, Drawer, ConfirmDialog, DeleteConfirmDialog.
+- **Data Table Architecture:**
+  - Implement generic, headless `DataTable<TData>` with column definitions, client/server sorting, search filtering, pagination, checkbox bulk selection, and row actions.
+- **Form System Architecture:**
+  - Implement schema-driven `FormField`, `FormLabel`, `FormDescription`, `FormMessage`.
+  - Implement reusable `CrudForm` pattern supporting `create`, `edit`, and `read-only` modes within a single component.
+- **State Management & Boundary Rules:**
+  - Establish TanStack Query for server state and API caching.
+  - Establish Zustand UI store (`ui-store.ts`) strictly for local ephemeral UI state (sidebar, modals).
+  - Establish centralized API client (`services/api/client.ts`) and structured `ApiError` class.
+  - **Enforce strict prohibition:** Zero direct database, Prisma, or Supabase queries from UI components.
+- **Showcase & Verification Route:**
+  - Create internal development preview route at `/ui-preview` verifying all components, themes, tables, forms, and modals with mock data.
+- **Definition of Done (DoD):**
+  1. All design system components compile cleanly with TypeScript in strict mode (`pnpm check-types`).
+  2. ESLint checks pass with zero errors.
+  3. Production build (`pnpm --filter=@skyra/web build`) generates all static and dynamic pages without warnings.
+  4. Theme switching (Light / Dark / System) functions smoothly with persistence.
+  5. Generic DataTable renders mock data with working sorting, search, pagination, and bulk selection.
+  6. CRUD form pattern validates inputs and toggles cleanly between create, edit, and read-only modes.
+  7. Dialogs, delete confirmation, drawer, and global toast notifications trigger and dismiss reliably.
+  8. Layout is fully responsive across mobile, tablet, and desktop viewports with no horizontal overflow.
+  9. **No direct database or Supabase access exists in frontend components.**
 
 ---
 
