@@ -6,119 +6,38 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
   QrCode,
-  BarChart3,
-  Layers,
-  Settings,
-  Users,
-  CreditCard,
-  Key,
-  Bot,
-  ShieldCheck,
   ChevronLeft,
   ChevronRight,
-  FolderOpen,
-  Sliders,
+  ShieldAlert,
+  Building,
 } from 'lucide-react';
 import { PROJECT_CODENAME } from '@skyra/shared';
 import { useUIStore } from '@/stores/ui-store';
+import { NavigationSection } from '@/config/navigation/navigation-types';
+import { userNavigation } from '@/config/navigation/user-navigation';
+import { adminNavigation } from '@/config/navigation/admin-navigation';
+import { isRouteActive } from '@/config/navigation/navigation-utils';
+import { Tooltip } from '@/components/ui/tooltip';
 
-export interface NavItem {
-  title: string;
-  href: string;
-  icon: React.ReactNode;
-  badge?: string;
+export interface SidebarProps {
+  variant?: 'user' | 'admin';
+  sections?: NavigationSection[];
+  className?: string;
 }
-
-export interface NavSection {
-  title?: string;
-  items: NavItem[];
-}
-
-const defaultNavSections: NavSection[] = [
-  {
-    title: 'Workspace',
-    items: [
-      {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: <BarChart3 className="h-4 w-4" />,
-      },
-      {
-        title: 'QR Codes',
-        href: '/qrs',
-        icon: <QrCode className="h-4 w-4" />,
-      },
-      {
-        title: 'Campaigns',
-        href: '/campaigns',
-        icon: <FolderOpen className="h-4 w-4" />,
-      },
-      {
-        title: 'Landing Pages',
-        href: '/landing-pages',
-        icon: <Layers className="h-4 w-4" />,
-      },
-      {
-        title: 'Analytics',
-        href: '/analytics',
-        icon: <BarChart3 className="h-4 w-4" />,
-      },
-    ],
-  },
-  {
-    title: 'Administration',
-    items: [
-      {
-        title: 'Team & RBAC',
-        href: '/team',
-        icon: <Users className="h-4 w-4" />,
-      },
-      {
-        title: 'Billing & Plans',
-        href: '/billing',
-        icon: <CreditCard className="h-4 w-4" />,
-      },
-      {
-        title: 'Developer API',
-        href: '/developer',
-        icon: <Key className="h-4 w-4" />,
-      },
-      {
-        title: 'MCP AI Agent',
-        href: '/mcp',
-        icon: <Bot className="h-4 w-4" />,
-        badge: 'Jarvis',
-      },
-      {
-        title: 'Settings',
-        href: '/settings',
-        icon: <Settings className="h-4 w-4" />,
-      },
-    ],
-  },
-  {
-    title: 'Design System',
-    items: [
-      {
-        title: 'UI Preview Showcase',
-        href: '/ui-preview',
-        icon: <Sliders className="h-4 w-4" />,
-        badge: 'Demo',
-      },
-    ],
-  },
-];
 
 export function Sidebar({
-  sections = defaultNavSections,
+  variant = 'user',
+  sections: customSections,
   className,
-}: {
-  sections?: NavSection[];
-  className?: string;
-}) {
+}: SidebarProps) {
   const pathname = usePathname();
   const { sidebarCollapsed, setSidebarCollapsed, sidebarOpen, setSidebarOpen } =
     useUIStore();
+
+  const sections =
+    customSections || (variant === 'admin' ? adminNavigation : userNavigation);
+
+  const homeHref = variant === 'admin' ? '/admin/dashboard' : '/dashboard';
 
   return (
     <>
@@ -142,24 +61,59 @@ export function Sidebar({
         {/* Brand Header */}
         <div className="flex h-16 items-center justify-between px-4 border-b border-sidebar-border">
           <Link
-            href="/ui-preview"
-            className="flex items-center gap-3 overflow-hidden"
+            href={homeHref}
+            className="flex items-center gap-3 overflow-hidden group"
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-              <QrCode className="h-5 w-5" />
+            <div
+              className={cn(
+                'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-sm transition-transform group-hover:scale-105',
+                variant === 'admin'
+                  ? 'bg-amber-600 text-white'
+                  : 'bg-primary text-primary-foreground'
+              )}
+            >
+              {variant === 'admin' ? (
+                <ShieldAlert className="h-5 w-5" />
+              ) : (
+                <QrCode className="h-5 w-5" />
+              )}
             </div>
             {!sidebarCollapsed && (
               <div className="flex flex-col">
                 <span className="text-sm font-bold tracking-tight text-foreground">
                   {PROJECT_CODENAME}
                 </span>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">
-                  SaaS Platform
+                <span
+                  className={cn(
+                    'text-[10px] uppercase tracking-widest font-semibold',
+                    variant === 'admin'
+                      ? 'text-amber-600 dark:text-amber-400 font-bold'
+                      : 'text-muted-foreground'
+                  )}
+                >
+                  {variant === 'admin' ? 'Platform Admin' : 'Workspace App'}
                 </span>
               </div>
             )}
           </Link>
         </div>
+
+        {/* Workspace Context Switcher (Placeholder) */}
+        {!sidebarCollapsed && variant === 'user' && (
+          <div className="px-3 pt-3 pb-1">
+            <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs">
+              <div className="flex items-center gap-2 truncate">
+                <Building className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                <span className="font-semibold truncate text-foreground">
+                  Skyra Tech HQ
+                </span>
+              </div>
+              <span className="text-[10px] text-muted-foreground font-mono bg-background px-1.5 py-0.5 rounded border border-border">
+                Prod
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Navigation Sections */}
         <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
@@ -171,8 +125,14 @@ export function Sidebar({
                 </h4>
               )}
               {section.items.map((item) => {
-                const isActive = pathname === item.href;
-                return (
+                const isActive = isRouteActive(
+                  pathname,
+                  item.href,
+                  item.exactMatch
+                );
+                const IconComponent = item.icon;
+
+                const linkContent = (
                   <Link
                     key={item.href}
                     href={item.href}
@@ -184,7 +144,6 @@ export function Sidebar({
                         : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
                       sidebarCollapsed && 'justify-center px-2'
                     )}
-                    title={sidebarCollapsed ? item.title : undefined}
                   >
                     <span
                       className={cn(
@@ -192,10 +151,10 @@ export function Sidebar({
                         isActive && 'text-primary'
                       )}
                     >
-                      {item.icon}
+                      <IconComponent className="h-4 w-4" />
                     </span>
                     {!sidebarCollapsed && (
-                      <span className="flex-1 truncate">{item.title}</span>
+                      <span className="flex-1 truncate">{item.label}</span>
                     )}
                     {!sidebarCollapsed && item.badge && (
                       <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-bold text-primary">
@@ -204,12 +163,22 @@ export function Sidebar({
                     )}
                   </Link>
                 );
+
+                if (sidebarCollapsed) {
+                  return (
+                    <Tooltip key={item.href} content={item.label} side="right">
+                      {linkContent}
+                    </Tooltip>
+                  );
+                }
+
+                return linkContent;
               })}
             </div>
           ))}
         </div>
 
-        {/* Footer Toggle */}
+        {/* Footer Collapse Toggle */}
         <div className="hidden lg:flex items-center justify-between p-3 border-t border-sidebar-border">
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}

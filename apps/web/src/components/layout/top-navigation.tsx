@@ -1,10 +1,15 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useUIStore } from '@/stores/ui-store';
 import { useTheme } from '@/providers/theme-provider';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Breadcrumbs } from '@/components/navigation/breadcrumbs';
+import { getBreadcrumbsForRoute } from '@/config/navigation/navigation-utils';
 import {
   Menu,
   Sun,
@@ -12,19 +17,31 @@ import {
   Laptop,
   Bell,
   Search,
+  Shield,
+  ArrowUpRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
+import { ROUTES } from '@/config/routes';
 
-export function TopNavigation({
-  breadcrumbs,
-  className,
-}: {
+export interface TopNavigationProps {
+  variant?: 'user' | 'admin';
   breadcrumbs?: React.ReactNode;
   className?: string;
-}) {
-  const { toggleSidebar, sidebarCollapsed } = useUIStore();
+}
+
+export function TopNavigation({
+  variant = 'user',
+  breadcrumbs,
+  className,
+}: TopNavigationProps) {
+  const pathname = usePathname();
+  const { toggleSidebar } = useUIStore();
   const { theme, setTheme } = useTheme();
+
+  // Automatic breadcrumb fallback
+  const renderedBreadcrumbs =
+    breadcrumbs || <Breadcrumbs items={getBreadcrumbsForRoute(pathname)} />;
 
   const themeOptions = [
     {
@@ -62,24 +79,51 @@ export function TopNavigation({
         >
           <Menu className="h-5 w-5" />
         </Button>
-        {breadcrumbs}
+        <div className="flex items-center gap-3">
+          {renderedBreadcrumbs}
+          {variant === 'admin' && (
+            <Badge variant="warning" size="sm" className="hidden sm:inline-flex">
+              Platform Admin
+            </Badge>
+          )}
+        </div>
       </div>
 
-      {/* Right: Actions, Search, Theme Toggle, Profile */}
+      {/* Right: Actions, Context Switcher, Theme Toggle, Profile */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Quick Search */}
+        {/* Quick Search Trigger */}
         <button
           type="button"
-          className="hidden md:flex items-center gap-2 rounded-lg border border-input bg-background px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground shadow-sm w-48 lg:w-64 transition-colors"
+          className="hidden md:flex items-center gap-2 rounded-lg border border-input bg-background px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground shadow-sm w-44 lg:w-56 transition-colors"
         >
           <Search className="h-3.5 w-3.5" />
-          <span>Search or jump to...</span>
+          <span>Quick find...</span>
           <kbd className="ml-auto rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono border border-border">
             ⌘K
           </kbd>
         </button>
 
-        {/* Notifications */}
+        {/* Cross-Surface Shortcut (Admin <-> User) */}
+        {variant === 'user' ? (
+          <Link
+            href={ROUTES.ADMIN.DASHBOARD}
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors px-2 py-1 rounded hover:bg-muted"
+          >
+            <Shield className="h-3.5 w-3.5" />
+            <span>Admin</span>
+            <ArrowUpRight className="h-3 w-3 opacity-60" />
+          </Link>
+        ) : (
+          <Link
+            href={ROUTES.DASHBOARD}
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded hover:bg-muted"
+          >
+            <span>Customer App</span>
+            <ArrowUpRight className="h-3 w-3 opacity-60" />
+          </Link>
+        )}
+
+        {/* Notifications Trigger */}
         <Button
           variant="ghost"
           size="icon"
@@ -107,14 +151,19 @@ export function TopNavigation({
           items={themeOptions}
         />
 
-        {/* User Profile Avatar */}
+        {/* User Account Avatar */}
         <div className="flex items-center gap-2 pl-2 border-l border-border">
-          <Avatar fallback="SQ" size="sm" />
+          <Avatar
+            fallback={variant === 'admin' ? 'PA' : 'SQ'}
+            size="sm"
+          />
           <div className="hidden xl:block text-left text-xs">
             <p className="font-semibold text-foreground leading-tight">
-              Skyra Operator
+              {variant === 'admin' ? 'Super Admin' : 'Skyra Operator'}
             </p>
-            <p className="text-[10px] text-muted-foreground">Admin Workspace</p>
+            <p className="text-[10px] text-muted-foreground">
+              {variant === 'admin' ? 'Platform Console' : 'Acme Workspace'}
+            </p>
           </div>
         </div>
       </div>
