@@ -167,7 +167,7 @@ The NestJS Fastify backend exposes lightweight health-check probes:
   "uptimeSeconds": 42,
   "checks": {
     "api": "ok",
-    "database": "pending",
+    "database": "ok",
     "redis": "pending"
   }
 }
@@ -177,7 +177,38 @@ The Next.js landing page features a live connection card that verifies connectiv
 
 ---
 
-## 6. Hosting & Deployment Roadmap
+## 6. Database Foundation & Migrations (Phase 1)
+
+SkyraQR utilizes **PostgreSQL 16+** as its authoritative transactional data store, managed through **Prisma ORM** and declarative raw SQL migrations.
+
+### 6.1 Database Architecture Highlights
+- **57 Relational Tables:** Fully normalized 3NF data model organized across 12 functional groups as documented in [`03_DATABASE_ARCHITECTURE_DOCUMENT.md`](./documentation/03_DATABASE_ARCHITECTURE_DOCUMENT.md).
+- **Dual-Guarantee UUIDv7:** RFC 9562 time-ordered UUIDv7 keys generated both at the database layer via PostgreSQL PL/pgSQL function `uuid_generate_v7()` as column defaults, and at the application layer via TypeScript `uuidv7`.
+- **Declarative Monthly Partitioning:** The high-throughput `scan_events` telemetry table is partitioned by range on `scanned_at TIMESTAMPTZ` with primary key `(id, scanned_at)` and initial monthly child partitions (`scan_events_YYYY_MM`).
+- **Privacy-by-Design:** `scan_events` contains zero raw IP columns; telemetry uses HMAC-SHA256 salted hashes (`visitor_hash`). `INET` datatypes are strictly confined to security and audit ledgers.
+- **Monetary Standardization:** All currency values are strictly standardized on `NUMERIC(12,2)`.
+- **Soft Deletion:** Partial unique indexes (`WHERE deleted_at IS NULL`) allow clean re-creation of short codes and domain slugs.
+
+### 6.2 Database Environment Setup
+Configure your connection strings in `apps/api/.env`:
+```env
+# Supabase Direct PostgreSQL
+DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.fmvnxfwfnpbcswvpgppm.supabase.co:5432/postgres"
+DIRECT_URL="postgresql://postgres:[YOUR-PASSWORD]@db.fmvnxfwfnpbcswvpgppm.supabase.co:5432/postgres"
+```
+
+### 6.3 Database CLI Commands
+| Command | Description |
+| :--- | :--- |
+| `pnpm --filter @skyra/api prisma:generate` | Generates the strongly-typed Prisma Client |
+| `pnpm --filter @skyra/api prisma:deploy` | Applies pending migrations to the active database |
+| `pnpm --filter @skyra/api seed` | Deterministically seeds 16 QR types, 27 permissions, plans, and features |
+| `pnpm --filter @skyra/api test:db` | Executes the 10-group automated database verification test suite |
+| `pnpm --filter @skyra/api prisma:reset` | Completely drops, recreates, re-migrates, and re-seeds the database |
+
+---
+
+## 7. Hosting & Deployment Roadmap
 
 - **Frontend (`apps/web`):** Designed for seamless zero-config deployment on **Vercel**.
 - **Backend API (`apps/api`):** Deployable on **Vercel Serverless / Cloud Containers** (Render, Railway, Fly.io, AWS ECS, or GCP Cloud Run) without monorepo restructuring.

@@ -3,17 +3,21 @@ import {
   HealthCheckResponse,
   PROJECT_CODENAME,
   PARENT_COMPANY,
-  COMMERCIAL_PRODUCT_NAME,
   SystemInfo,
 } from '@skyra/shared';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class HealthService {
   private readonly startTime = Date.now();
 
-  getHealth(): HealthCheckResponse {
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async getHealth(): Promise<HealthCheckResponse> {
+    const isDbHealthy = await this.databaseService.ping();
+
     return {
-      status: 'ok',
+      status: isDbHealthy ? 'ok' : 'degraded',
       service: 'skyra-api',
       version: '1.0.0',
       environment: process.env.NODE_ENV || 'development',
@@ -21,8 +25,8 @@ export class HealthService {
       uptimeSeconds: Math.floor((Date.now() - this.startTime) / 1000),
       checks: {
         api: 'ok',
-        database: 'pending', // Supabase integration in subsequent phase
-        redis: 'pending',    // Deferred as per architecture
+        database: isDbHealthy ? 'ok' : 'error',
+        redis: 'pending', // Deferred as per architecture
       },
     };
   }
@@ -34,7 +38,7 @@ export class HealthService {
     };
   }
 
-  getReadiness(): HealthCheckResponse {
+  async getReadiness(): Promise<HealthCheckResponse> {
     return this.getHealth();
   }
 

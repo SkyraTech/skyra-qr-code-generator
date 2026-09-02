@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@skyra/shared": "workspace:*",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.48.1",
     "@tanstack/react-query": "^5.102.8",
     "@tanstack/react-table": "^9.2.4",
     "clsx": "^2.1.1",
