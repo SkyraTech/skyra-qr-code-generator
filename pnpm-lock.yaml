@@ -105,6 +105,9 @@ importers:
       '@skyra/dynamic-form':
         specifier: link:../../../skyra-platform/packages/dynamic-form
         version: link:../../../skyra-platform/packages/dynamic-form
+      '@skyra/qr':
+        specifier: link:../../../skyra-platform/packages/qr
+        version: link:../../../skyra-platform/packages/qr
       '@skyra/shared':
         specifier: workspace:*
         version: link:../../packages/shared

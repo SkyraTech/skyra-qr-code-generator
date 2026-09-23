@@ -8,6 +8,7 @@ import { StatsCard } from '@/components/layout/stats-card';
 
 
 
+import { QRPreview } from '@/components/qr/qr-preview';
 import { QrCode, Plus, BarChart3, Users, Zap, ExternalLink, ArrowRight } from 'lucide-react';
 import { formatNumber, formatCurrency } from '@/lib/formatters';
 import { ROUTES } from '@/config/routes';
@@ -67,8 +68,13 @@ export default function WorkspaceDashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="p-5 flex flex-col justify-between">
             <div>
-              <Badge variant="success" size="sm">Active</Badge>
-              <h4 className="font-semibold text-foreground text-sm mt-2">Summer Restaurant Menu</h4>
+              <div className="flex justify-between items-start">
+    <div>
+      <Badge variant="success" size="sm">Active</Badge>
+      <h4 className="font-semibold text-foreground text-sm mt-2">Summer Restaurant Menu</h4>
+    </div>
+    <QRPreview payload="https://skyra.link/sm-mnu1" className="w-16 h-16 shrink-0 ml-2" />
+  </div>
               <p className="text-xs text-muted-foreground mt-1">Digital menu QR for outdoor patio seating.</p>
             </div>
             <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs">
@@ -82,8 +88,13 @@ export default function WorkspaceDashboardPage() {
 
           <Card className="p-5 flex flex-col justify-between">
             <div>
-              <Badge variant="success" size="sm">Active</Badge>
-              <h4 className="font-semibold text-foreground text-sm mt-2">Executive Contact vCard</h4>
+              <div className="flex justify-between items-start">
+    <div>
+      <Badge variant="success" size="sm">Active</Badge>
+      <h4 className="font-semibold text-foreground text-sm mt-2">Executive Contact vCard</h4>
+    </div>
+    <QRPreview payload="https://skyra.link/ceo-vcf" className="w-16 h-16 shrink-0 ml-2" />
+  </div>
               <p className="text-xs text-muted-foreground mt-1">NFC badge & QR code redirect for sales reps.</p>
             </div>
             <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs">
@@ -97,8 +108,13 @@ export default function WorkspaceDashboardPage() {
 
           <Card className="p-5 flex flex-col justify-between">
             <div>
-              <Badge variant="warning" size="sm">Scheduled</Badge>
-              <h4 className="font-semibold text-foreground text-sm mt-2">Autumn Product Showcase</h4>
+              <div className="flex justify-between items-start">
+    <div>
+      <Badge variant="warning" size="sm">Scheduled</Badge>
+      <h4 className="font-semibold text-foreground text-sm mt-2">Autumn Product Showcase</h4>
+    </div>
+    <QRPreview payload="https://skyra.link/autumn-promo" className="w-16 h-16 shrink-0 ml-2" />
+  </div>
               <p className="text-xs text-muted-foreground mt-1">Dynamic URL redirect scheduled for Sep 15.</p>
             </div>
             <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs">
