@@ -1,4 +1,13 @@
 import type { Metadata } from 'next';
+// ── Skyra Platform CSS Foundation ──
+// Imported via JS so Next.js handles ordering correctly.
+// @skyra/design-tokens/tokens.css  → --skyra-* CSS custom properties (light + dark)
+// @skyra/design-tokens/reset.css   → Skyra's normalisation reset
+// @skyra/ui/styles.css             → .skyra-* component class styles
+import '@skyra/design-tokens/tokens.css';
+import '@skyra/design-tokens/reset.css';
+import '@skyra/ui/styles.css';
+// ── SkyraQR own global styles (Tailwind) ──
 import './globals.css';
 import { PROJECT_CODENAME, PARENT_COMPANY } from '@skyra/shared';
 import { ThemeProvider } from '@/providers/theme-provider';

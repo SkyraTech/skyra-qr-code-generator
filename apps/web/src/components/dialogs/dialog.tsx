@@ -1,133 +1,36 @@
 'use client';
 
 import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { X } from 'lucide-react';
+import { Modal as PlatformModal } from '@skyra/dialogs';
+import type { ModalProps as PlatformModalProps } from '@skyra/dialogs';
 
-export interface DialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-  className?: string;
-  size?: 'sm' | 'default' | 'lg' | 'xl' | 'full';
+export interface DialogProps extends Omit<PlatformModalProps, 'open'> {
+  isOpen?: boolean;
 }
 
-export function Dialog({
-  isOpen,
-  onClose,
-  children,
-  className,
-  size = 'default',
-}: DialogProps) {
-  React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
-    }
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
-  const sizeStyles = {
-    sm: 'max-w-md',
-    default: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl',
-    full: 'max-w-[95vw] h-[90vh]',
-  };
-
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-    >
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity animate-in fade-in-0"
-        onClick={onClose}
+/**
+ * @platform-shim — migrated to @skyra/dialogs
+ *
+ * SkyraQR dialogs/dialog → @skyra/dialogs Modal
+ * Maps QR's isOpen to Platform's open.
+ */
+export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(
+  ({ isOpen, ...props }, ref) => {
+    return (
+      <PlatformModal
+        open={isOpen ?? false}
+        {...props}
       />
+    );
+  }
+);
+Dialog.displayName = 'Dialog';
 
-      {/* Content Window */}
-      <div
-        className={cn(
-          'relative z-50 flex w-full flex-col rounded-xl border border-border bg-card p-6 shadow-2xl transition-all animate-in fade-in-0 zoom-in-95',
-          sizeStyles[size],
-          className
-        )}
-      >
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 rounded-md p-1 opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring text-muted-foreground hover:text-foreground"
-          aria-label="Close dialog"
-        >
-          <X className="h-4 w-4" />
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-}
+export { PlatformModal as Modal };
+export type { PlatformModalProps as ModalProps };
 
-export function DialogHeader({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn('flex flex-col space-y-1.5 text-left mb-4', className)}
-      {...props}
-    />
-  );
-}
-
-export function DialogTitle({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLHeadingElement>) {
-  return (
-    <h3
-      className={cn(
-        'text-lg font-semibold leading-none tracking-tight text-foreground',
-        className
-      )}
-      {...props}
-    />
-  );
-}
-
-export function DialogDescription({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLParagraphElement>) {
-  return (
-    <p
-      className={cn('text-xs text-muted-foreground leading-relaxed mt-1', className)}
-      {...props}
-    />
-  );
-}
-
-export function DialogFooter({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn(
-        'flex flex-col-reverse sm:flex-row sm:justify-end gap-2 mt-6 pt-4 border-t border-border',
-        className
-      )}
-      {...props}
-    />
-  );
-}
+// Dummy wrappers for backward compatibility in ui-preview
+export function DialogHeader({ children }: any) { return <div className="mb-4">{children}</div>; }
+export function DialogTitle({ children }: any) { return <h3 className="text-lg font-semibold">{children}</h3>; }
+export function DialogDescription({ children }: any) { return <p className="text-sm text-muted-foreground">{children}</p>; }
+export function DialogFooter({ children }: any) { return <div className="mt-6 flex justify-end gap-2">{children}</div>; }

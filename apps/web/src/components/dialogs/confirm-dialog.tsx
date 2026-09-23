@@ -1,71 +1,33 @@
 'use client';
 
 import * as React from 'react';
-import {
-  Dialog,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from './dialog';
-import { Button } from '@/components/ui/button';
-import { AlertTriangle } from 'lucide-react';
+import { ConfirmDialog as PlatformConfirmDialog } from '@skyra/dialogs';
+import type { ConfirmDialogProps as PlatformConfirmDialogProps } from '@skyra/dialogs';
 
-export interface ConfirmDialogProps {
+export interface ConfirmDialogProps extends Omit<PlatformConfirmDialogProps, 'open' | 'onCancel' | 'message'> {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void | Promise<void>;
-  title: string;
-  description: React.ReactNode;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  isDestructive?: boolean;
-  isLoading?: boolean;
+  description?: React.ReactNode;
 }
 
+/**
+ * @platform-shim — migrated to @skyra/dialogs
+ *
+ * SkyraQR dialogs/confirm-dialog → @skyra/dialogs ConfirmDialog
+ * Maps QR's isOpen/onClose/description to Platform's open/onCancel/message.
+ */
 export function ConfirmDialog({
   isOpen,
   onClose,
-  onConfirm,
-  title,
   description,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
-  isDestructive = false,
-  isLoading = false,
+  ...props
 }: ConfirmDialogProps) {
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} size="sm">
-      <DialogHeader>
-        <div className="flex items-center gap-3">
-          {isDestructive && (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-              <AlertTriangle className="h-5 w-5" />
-            </div>
-          )}
-          <DialogTitle>{title}</DialogTitle>
-        </div>
-        <DialogDescription>{description}</DialogDescription>
-      </DialogHeader>
-
-      <DialogFooter>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onClose}
-          disabled={isLoading}
-        >
-          {cancelLabel}
-        </Button>
-        <Button
-          variant={isDestructive ? 'destructive' : 'default'}
-          size="sm"
-          onClick={onConfirm}
-          isLoading={isLoading}
-        >
-          {confirmLabel}
-        </Button>
-      </DialogFooter>
-    </Dialog>
+    <PlatformConfirmDialog
+      open={isOpen}
+      onCancel={onClose}
+      message={description}
+      {...props}
+    />
   );
 }

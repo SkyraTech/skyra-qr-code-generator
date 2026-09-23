@@ -1,61 +1,25 @@
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+'use client';
 
-export interface SwitchProps {
-  checked?: boolean;
+import * as React from 'react';
+import { Switch as PlatformSwitch } from '@skyra/ui';
+import type { SwitchProps as PlatformSwitchProps } from '@skyra/ui';
+
+export interface SwitchProps extends Omit<PlatformSwitchProps, 'onChange'> {
   onCheckedChange?: (checked: boolean) => void;
-  disabled?: boolean;
-  className?: string;
-  id?: string;
-  name?: string;
-  'aria-label'?: string;
+  checked?: boolean;
 }
 
-export function Switch({
-  checked = false,
-  onCheckedChange,
-  disabled = false,
-  className,
-  id,
-  name,
-  'aria-label': ariaLabel,
-}: SwitchProps) {
-  const handleClick = () => {
-    if (!disabled && onCheckedChange) {
-      onCheckedChange(!checked);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!disabled && (e.key === ' ' || e.key === 'Enter')) {
-      e.preventDefault();
-      onCheckedChange?.(!checked);
-    }
-  };
-
+/**
+ * @platform-shim — migrated to @skyra/ui
+ *
+ * SkyraQR UI Switch → @skyra/ui Switch
+ * Maps QR's onCheckedChange prop to Platform's onChange.
+ */
+export function Switch({ onCheckedChange, ...props }: SwitchProps) {
   return (
-    <button
-      type="button"
-      role="switch"
-      id={id}
-      name={name}
-      aria-checked={checked}
-      aria-label={ariaLabel}
-      disabled={disabled}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      className={cn(
-        'peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50',
-        checked ? 'bg-primary' : 'bg-muted border-border',
-        className
-      )}
-    >
-      <span
-        className={cn(
-          'pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform',
-          checked ? 'translate-x-5 bg-white' : 'translate-x-0'
-        )}
-      />
-    </button>
+    <PlatformSwitch
+      onChange={onCheckedChange}
+      {...props}
+    />
   );
 }

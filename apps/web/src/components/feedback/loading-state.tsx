@@ -1,6 +1,16 @@
+/**
+ * @platform-shim — migrated to @skyra/ui
+ *
+ * SkyraQR feedback/loading-state → @skyra/ui Spinner
+ *
+ * QR's LoadingState was an inline container with a loader icon and message.
+ * Platform's Spinner provides the loader, and this shim maintains the inline
+ * container layout.
+ */
+'use client';
+
 import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
+import { Spinner } from '@skyra/ui';
 
 export interface LoadingStateProps {
   message?: string;
@@ -10,25 +20,18 @@ export interface LoadingStateProps {
 
 export function LoadingState({
   message = 'Loading data...',
-  className,
+  className = '',
   size = 'default',
 }: LoadingStateProps) {
-  const iconSizes = {
-    sm: 'h-4 w-4',
-    default: 'h-6 w-6',
-    lg: 'h-8 w-8',
-  };
+  const platformSize = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'md';
 
   return (
     <div
-      className={cn(
-        'flex min-h-[200px] flex-col items-center justify-center p-8 text-center',
-        className
-      )}
+      className={['flex min-h-[200px] flex-col items-center justify-center p-8 text-center', className]
+        .filter(Boolean)
+        .join(' ')}
     >
-      <Loader2
-        className={cn('animate-spin text-primary mb-3', iconSizes[size])}
-      />
+      <Spinner size={platformSize} className="mb-3 text-primary" />
       {message && (
         <p className="text-xs text-muted-foreground font-medium animate-pulse">
           {message}

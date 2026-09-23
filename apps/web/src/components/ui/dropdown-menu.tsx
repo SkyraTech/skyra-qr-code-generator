@@ -1,103 +1,42 @@
 'use client';
 
 import * as React from 'react';
-import { cn } from '@/lib/utils';
+import { DropdownMenu as PlatformDropdownMenu } from '@skyra/ui';
+import type { DropdownMenuProps, DropdownMenuItemConfig } from '@skyra/ui';
 
-export interface DropdownMenuItem {
-  label: React.ReactNode;
-  icon?: React.ReactNode;
-  onClick?: () => void;
-  disabled?: boolean;
-  destructive?: boolean;
+// Dummy wrapper for backward compatibility with QR consumers that manually build DropdownMenu items
+// Platform's DropdownMenu expects an `items` config array instead of children.
+export function DropdownMenu({ children, items, ...props }: any) {
+  if (items) {
+    return <PlatformDropdownMenu items={items} {...props} />;
+  }
+  // Fallback: Just render the children in a div if consumers are passing children manually.
+  // Note: True migration requires replacing `<DropdownMenuItem>` usage with the `items` array config.
+  return <div className="dropdown-fallback">{children}</div>;
 }
 
-export interface DropdownMenuProps {
-  trigger: React.ReactNode;
-  items: (DropdownMenuItem | 'separator')[];
-  align?: 'left' | 'right';
-  className?: string;
+export function DropdownMenuTrigger({ children, asChild }: any) {
+  return <>{children}</>;
 }
 
-export function DropdownMenu({
-  trigger,
-  items,
-  align = 'right',
-  className,
-}: DropdownMenuProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+export function DropdownMenuContent({ children }: any) {
+  return <div className="absolute z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md">{children}</div>;
+}
 
-  React.useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
+export function DropdownMenuItem({ children, onClick, className }: any) {
   return (
-    <div className="relative inline-block text-left" ref={containerRef}>
-      <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-        {trigger}
-      </div>
-
-      {isOpen && (
-        <div
-          role="menu"
-          className={cn(
-            'absolute z-50 mt-2 min-w-[160px] rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-lg animate-in fade-in-0 zoom-in-95',
-            align === 'right' ? 'right-0' : 'left-0',
-            className
-          )}
-        >
-          {items.map((item, index) => {
-            if (item === 'separator') {
-              return (
-                <div
-                  key={`sep-${index}`}
-                  className="my-1 h-[1px] bg-border"
-                />
-              );
-            }
-
-            return (
-              <button
-                key={index}
-                role="menuitem"
-                disabled={item.disabled}
-                onClick={() => {
-                  if (!item.disabled) {
-                    item.onClick?.();
-                    setIsOpen(false);
-                  }
-                }}
-                className={cn(
-                  'relative flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2.5 py-1.5 text-xs font-medium outline-none transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50 text-left',
-                  item.destructive &&
-                    'text-destructive hover:bg-destructive/10 hover:text-destructive'
-                )}
-              >
-                {item.icon && (
-                  <span className="h-3.5 w-3.5 flex items-center justify-center">
-                    {item.icon}
-                  </span>
-                )}
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
+    <button onClick={onClick} className={`relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground ${className}`}>
+      {children}
+    </button>
   );
 }
+
+export function DropdownMenuLabel({ children }: any) {
+  return <div className="px-2 py-1.5 text-sm font-semibold">{children}</div>;
+}
+
+export function DropdownMenuSeparator() {
+  return <div className="-mx-1 my-1 h-px bg-muted" />;
+}
+
+export type { DropdownMenuProps, DropdownMenuItemConfig };

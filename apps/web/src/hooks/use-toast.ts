@@ -1,65 +1,65 @@
+/**
+ * @platform-shim — migrated to @skyra/ui
+ *
+ * SkyraQR hooks/use-toast → @skyra/ui Toast
+ *
+ * This shim maps QR's toast API (variant, description)
+ * to Platform's API (type, message).
+ */
 'use client';
 
-import { useState, useEffect } from 'react';
+import { toast as platformToast, useToast as platformUseToast } from '@skyra/ui';
+import type { ToastOptions as PlatformToastOptions } from '@skyra/ui';
 
 export type ToastVariant = 'default' | 'success' | 'destructive' | 'warning' | 'info';
 
 export interface ToastItem {
-  id: string;
+  id?: string;
   title: string;
-  description?: string;
+  description?: React.ReactNode;
   variant?: ToastVariant;
   duration?: number;
 }
 
-type ToastListener = (toasts: ToastItem[]) => void;
+const VARIANT_MAP: Record<ToastVariant, PlatformToastOptions['type']> = {
+  default: 'neutral',
+  success: 'success',
+  destructive: 'error',
+  warning: 'warning',
+  info: 'info',
+};
 
-let memoryToasts: ToastItem[] = [];
-const listeners: Set<ToastListener> = new Set();
-
-function emit() {
-  listeners.forEach((listener) => listener([...memoryToasts]));
+/**
+ * Adapter function that maps QR toast props to Platform toast props
+ */
+export function toast(options: ToastItem) {
+  return platformToast({
+    id: options.id,
+    title: options.title,
+    message: options.description,
+    type: options.variant ? VARIANT_MAP[options.variant] : 'neutral',
+    duration: options.duration,
+  });
 }
 
-export function toast(options: Omit<ToastItem, 'id'>) {
-  const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  const item: ToastItem = {
-    id,
-    duration: 4000,
-    variant: 'default',
-    ...options,
-  };
-
-  memoryToasts = [...memoryToasts, item];
-  emit();
-
-  if (item.duration && item.duration > 0) {
-    setTimeout(() => {
-      dismissToast(id);
-    }, item.duration);
-  }
-
-  return id;
-}
-
-export function dismissToast(id: string) {
-  memoryToasts = memoryToasts.filter((t) => t.id !== id);
-  emit();
-}
-
+/**
+ * Adapter hook that maps QR toast API to Platform toast API
+ */
 export function useToast() {
-  const [toasts, setToasts] = useState<ToastItem[]>(memoryToasts);
-
-  useEffect(() => {
-    listeners.add(setToasts);
-    return () => {
-      listeners.delete(setToasts);
-    };
-  }, []);
+  const { toasts, dismiss, dismissAll } = platformUseToast();
+  
+  // Map Platform ToastData back to QR ToastItem format for consumers reading state
+  const mappedToasts = toasts.map((t) => ({
+    id: t.id,
+    title: t.title as string,
+    description: t.message,
+    variant: t.type === 'error' ? 'destructive' : t.type === 'neutral' ? 'default' : t.type as ToastVariant,
+  }));
 
   return {
-    toasts,
+    toasts: mappedToasts,
     toast,
-    dismiss: dismissToast,
+    dismiss,
+    dismissAll,
   };
 }

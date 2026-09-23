@@ -1,7 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@skyra/shared'],
+  // Skyra Platform packages expose TypeScript source directly (src/index.ts).
+  // Next.js must transpile them rather than treating them as pre-compiled JS.
+  transpilePackages: [
+    '@skyra/shared',
+    '@skyra/ui',
+    '@skyra/dialogs',
+    '@skyra/data-table',
+    '@skyra/dynamic-form',
+    '@skyra/design-tokens',
+    '@skyra/utils',
+    '@skyra/data-export',
+    '@skyra/validation',
+  ],
   async rewrites() {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
     return [

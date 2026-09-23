@@ -12,6 +12,13 @@ export interface DeleteConfirmDialogProps {
   isLoading?: boolean;
 }
 
+/**
+ * @platform-shim — migrated to @skyra/dialogs
+ *
+ * SkyraQR dialogs/delete-confirm-dialog → @skyra/dialogs ConfirmDialog (danger)
+ *
+ * This wrapper adapts QR's specific "delete entity" API to the generic Platform ConfirmDialog.
+ */
 export function DeleteConfirmDialog({
   isOpen,
   onClose,
@@ -30,7 +37,7 @@ export function DeleteConfirmDialog({
         <span>
           Are you sure you want to permanently delete{' '}
           {itemName ? (
-            <strong className="font-semibold text-foreground">&ldquo;{itemName}&rdquo;</strong>
+            <strong className="font-semibold">&ldquo;{itemName}&rdquo;</strong>
           ) : (
             `this ${itemType}`
           )}
@@ -39,7 +46,7 @@ export function DeleteConfirmDialog({
       }
       confirmLabel="Delete Permanently"
       cancelLabel="Keep It"
-      isDestructive={true}
+      variant="danger"
       isLoading={isLoading}
     />
   );

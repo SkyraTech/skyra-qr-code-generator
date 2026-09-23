@@ -1,28 +1,26 @@
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Calendar } from 'lucide-react';
+'use client';
 
-export interface DatePickerProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  error?: boolean;
+import * as React from 'react';
+import { DateField as PlatformDateField } from '@skyra/ui';
+import type { DateFieldProps as PlatformDateFieldProps } from '@skyra/ui';
+
+export interface DatePickerProps extends Omit<PlatformDateFieldProps, 'value'> {
+  defaultValue?: string | Date;
+  value?: string | Date;
 }
 
-export const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ className, error, ...props }, ref) => {
+/**
+ * @platform-shim — migrated to @skyra/ui
+ *
+ * SkyraQR UI DatePicker → @skyra/ui DateField
+ * Maps QR's defaultValue to Platform's value.
+ */
+export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
+  ({ defaultValue, value, ...props }, ref) => {
     return (
-      <div className="relative flex w-full items-center">
-        <div className="absolute left-3 flex items-center pointer-events-none text-muted-foreground">
-          <Calendar className="h-4 w-4" />
-        </div>
-        <input
-          type="date"
-          className={cn(
-            'flex h-10 w-full rounded-lg border border-input bg-background pl-9 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
-            error &&
-              'border-destructive focus-visible:ring-destructive text-destructive',
-            className
-          )}
-          ref={ref}
+      <div ref={ref}>
+        <PlatformDateField
+          value={value ?? defaultValue}
           {...props}
         />
       </div>
@@ -30,3 +28,6 @@ export const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
   }
 );
 DatePicker.displayName = 'DatePicker';
+
+export { PlatformDateField as DateField };
+export type { PlatformDateFieldProps as DateFieldProps };

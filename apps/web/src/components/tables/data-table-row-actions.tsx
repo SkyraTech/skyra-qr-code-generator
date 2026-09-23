@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuItemConfig } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Eye, Edit2, Trash2 } from 'lucide-react';
 
@@ -8,7 +8,7 @@ export interface DataTableRowActionsProps<TData> {
   onView?: (row: TData) => void;
   onEdit?: (row: TData) => void;
   onDelete?: (row: TData) => void;
-  customActions?: DropdownMenuItem[];
+  customActions?: DropdownMenuItemConfig[];
 }
 
 export function DataTableRowActions<TData>({
@@ -18,7 +18,7 @@ export function DataTableRowActions<TData>({
   onDelete,
   customActions = [],
 }: DataTableRowActionsProps<TData>) {
-  const items: (DropdownMenuItem | 'separator')[] = [];
+  const items: (DropdownMenuItemConfig | 'separator')[] = [];
 
   if (onView) {
     items.push({
