@@ -1,11 +1,13 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DEFAULT_API_PORT, PROJECT_CODENAME } from '@skyra/shared';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const logger = new Logger(`${PROJECT_CODENAME}-API`);
@@ -17,6 +19,21 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     fastifyAdapter,
+  );
+
+  // Global Exception Filter
+  app.useGlobalFilters(new GlobalExceptionFilter());
+
+  // Global Transform Interceptor
+  app.useGlobalInterceptors(new TransformInterceptor());
+
+  // Global Validation Pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
   );
 
   // Configure CORS for frontend access
