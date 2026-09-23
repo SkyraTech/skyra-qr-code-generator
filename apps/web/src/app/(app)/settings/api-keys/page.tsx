@@ -1,9 +1,9 @@
 'use client';
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge } from '@skyra/ui';
 import * as React from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
+
+
 import { CodeBlock } from '@/components/data-display/code-block';
 import { Key, Plus, Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';

@@ -1,5 +1,4 @@
 'use client';
-
 import * as React from 'react';
 import { Modal as PlatformModal } from '@skyra/dialogs';
 import type { ModalProps as PlatformModalProps } from '@skyra/dialogs';

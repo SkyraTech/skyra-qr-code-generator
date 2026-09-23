@@ -1,8 +1,8 @@
 'use client';
-
+import { Button, Alert } from '@skyra/ui';
 import * as React from 'react';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/feedback/alert';
+
+
 import { cn } from '@/lib/utils';
 
 export type FormMode = 'create' | 'edit' | 'read-only';
@@ -50,7 +50,7 @@ export function CrudForm({
     >
       {/* Server Error Banner */}
       {serverError && (
-        <Alert variant="destructive" title="Submission Error">
+        <Alert variant="danger" title="Submission Error">
           {serverError}
         </Alert>
       )}
@@ -89,7 +89,7 @@ export function CrudForm({
 
           <Button
             type="submit"
-            variant="default"
+            variant="primary"
             size="sm"
             isLoading={isSubmitting}
           >

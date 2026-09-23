@@ -1,15 +1,15 @@
 'use client';
-
+import { Avatar, Button, Badge, DropdownMenu, Breadcrumb } from '@skyra/ui';
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUIStore } from '@/stores/ui-store';
 import { useTheme } from '@/providers/theme-provider';
-import { Avatar } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Breadcrumbs } from '@/components/navigation/breadcrumbs';
-import { getBreadcrumbsForRoute } from '@/config/navigation/navigation-utils';
+
+
+
+
+import { getBreadcrumbForRoute } from '@/config/navigation/navigation-utils';
 import {
   Menu,
   Sun,
@@ -21,7 +21,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { DropdownMenu } from '@/components/ui/dropdown-menu';
+
 import { ROUTES } from '@/config/routes';
 
 export interface TopNavigationProps {
@@ -40,8 +40,8 @@ export function TopNavigation({
   const { theme, setTheme } = useTheme();
 
   // Automatic breadcrumb fallback
-  const renderedBreadcrumbs =
-    breadcrumbs || <Breadcrumbs items={getBreadcrumbsForRoute(pathname)} />;
+  const renderedBreadcrumb =
+    breadcrumbs || <Breadcrumb><span /></Breadcrumb>;
 
   const themeOptions = [
     {
@@ -68,11 +68,11 @@ export function TopNavigation({
         className
       )}
     >
-      {/* Left: Mobile Toggle & Breadcrumbs */}
+      {/* Left: Mobile Toggle & Breadcrumb */}
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
-          size="icon"
+          iconOnly={true}
           className="lg:hidden h-9 w-9 text-muted-foreground"
           onClick={toggleSidebar}
           aria-label="Toggle mobile menu"
@@ -80,7 +80,7 @@ export function TopNavigation({
           <Menu className="h-5 w-5" />
         </Button>
         <div className="flex items-center gap-3">
-          {renderedBreadcrumbs}
+          {renderedBreadcrumb}
           {variant === 'admin' && (
             <Badge variant="warning" size="sm" className="hidden sm:inline-flex">
               Platform Admin
@@ -126,7 +126,7 @@ export function TopNavigation({
         {/* Notifications Trigger */}
         <Button
           variant="ghost"
-          size="icon"
+          iconOnly={true}
           className="h-9 w-9 text-muted-foreground hover:text-foreground relative"
           aria-label="Notifications"
         >
@@ -136,11 +136,11 @@ export function TopNavigation({
 
         {/* Theme Toggle */}
         <DropdownMenu
-          align="right"
+          align="end"
           trigger={
             <Button
               variant="ghost"
-              size="icon"
+              iconOnly={true}
               className="h-9 w-9 text-muted-foreground hover:text-foreground"
               aria-label="Toggle theme"
             >

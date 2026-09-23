@@ -1,13 +1,13 @@
 'use client';
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Switch, Input } from '@skyra/ui';
 import * as React from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { PageContainer, Section } from '@/components/layout/page-container';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
+
+
+
 import { FormField } from '@/components/forms/form-field';
-import { Input } from '@/components/ui/input';
+
 import { Save } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -44,7 +44,7 @@ export default function AdminSettingsPage() {
                   <p className="text-xs font-semibold text-foreground">Global Maintenance Mode</p>
                   <p className="text-[11px] text-muted-foreground">Redirect all public traffic to maintenance notice.</p>
                 </div>
-                <Switch checked={maintenanceMode} onCheckedChange={setMaintenanceMode} />
+                <Switch checked={maintenanceMode} onChange={setMaintenanceMode} />
               </div>
 
               <div className="flex items-center justify-between py-2">
@@ -52,7 +52,7 @@ export default function AdminSettingsPage() {
                   <p className="text-xs font-semibold text-foreground">Open Self-Serve Registration</p>
                   <p className="text-[11px] text-muted-foreground">Allow new businesses to register workspaces directly.</p>
                 </div>
-                <Switch checked={registrationOpen} onCheckedChange={setRegistrationOpen} />
+                <Switch checked={registrationOpen} onChange={setRegistrationOpen} />
               </div>
             </CardContent>
           </Card>

@@ -1,11 +1,9 @@
 'use client';
-
+import { Button, EmptyState } from '@skyra/ui';
 import * as React from 'react';
 import Link from 'next/link';
-import { EmptyState } from '@/components/feedback/empty-state';
-import { PageContainer } from '@/components/layout/page-container';
-import { Button } from '@/components/ui/button';
-import { Compass, ArrowLeft } from 'lucide-react';
+
+import { Compass } from 'lucide-react';
 import { ROUTES } from '@/config/routes';
 
 export default function NotFoundPage() {
@@ -16,14 +14,12 @@ export default function NotFoundPage() {
           icon={<Compass className="h-8 w-8 text-primary" />}
           title="Page Not Found (404)"
           description="The route or resource you requested could not be located in this workspace or administration surface."
-          actionLabel="Return to Dashboard"
-          onAction={() => {
-            window.location.href = ROUTES.DASHBOARD;
-          }}
-          secondaryActionLabel="Return to Homepage"
-          onSecondaryAction={() => {
-            window.location.href = ROUTES.HOME;
-          }}
+          action={
+            <div className="flex gap-2 justify-center">
+              <Button onClick={() => window.location.href = ROUTES.DASHBOARD}>Return to Dashboard</Button>
+              <Button variant="outline" onClick={() => window.location.href = ROUTES.HOME}>Return to Homepage</Button>
+            </div>
+          }
         />
       </div>
     </div>

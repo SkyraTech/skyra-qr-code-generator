@@ -1,10 +1,10 @@
 'use client';
-
+import { Card, CardContent, CardFooter, Button, Input } from '@skyra/ui';
 import * as React from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
+
+
 import { FormField } from '@/components/forms/form-field';
 import { QrCode, ArrowRight, Lock, Mail, Building, User } from 'lucide-react';
 import { PROJECT_CODENAME } from '@skyra/shared';
@@ -45,7 +45,7 @@ export default function RegisterPage() {
                 <Input
                   id="name"
                   placeholder="Jane Doe"
-                  leftIcon={<User className="h-4 w-4" />}
+                  leadingIcon={<User className="h-4 w-4" />}
                   required
                 />
               </FormField>
@@ -54,7 +54,7 @@ export default function RegisterPage() {
                 <Input
                   id="company"
                   placeholder="Acme International"
-                  leftIcon={<Building className="h-4 w-4" />}
+                  leadingIcon={<Building className="h-4 w-4" />}
                   required
                 />
               </FormField>
@@ -64,7 +64,7 @@ export default function RegisterPage() {
                   id="email"
                   type="email"
                   placeholder="jane@acme.com"
-                  leftIcon={<Mail className="h-4 w-4" />}
+                  leadingIcon={<Mail className="h-4 w-4" />}
                   required
                 />
               </FormField>
@@ -74,7 +74,7 @@ export default function RegisterPage() {
                   id="password"
                   type="password"
                   placeholder="At least 12 characters"
-                  leftIcon={<Lock className="h-4 w-4" />}
+                  leadingIcon={<Lock className="h-4 w-4" />}
                   required
                 />
               </FormField>

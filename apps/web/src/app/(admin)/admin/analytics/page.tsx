@@ -1,10 +1,10 @@
 'use client';
-
+import { Card, CardHeader, CardTitle, CardContent } from '@skyra/ui';
 import * as React from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { PageContainer, DashboardGrid, Section } from '@/components/layout/page-container';
 import { StatsCard } from '@/components/layout/stats-card';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+
 import { Activity, Globe, Zap, Cpu } from 'lucide-react';
 import { formatNumber } from '@/lib/formatters';
 

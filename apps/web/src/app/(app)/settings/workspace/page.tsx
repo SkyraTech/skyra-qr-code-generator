@@ -1,9 +1,9 @@
 'use client';
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, Button, Input } from '@skyra/ui';
 import * as React from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
+
+
 import { FormField } from '@/components/forms/form-field';
 import { toast } from '@/hooks/use-toast';
 

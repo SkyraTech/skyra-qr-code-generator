@@ -1,10 +1,10 @@
 'use client';
-
+import { Card, CardContent, CardFooter, Button, Input } from '@skyra/ui';
 import * as React from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
+
+
 import { FormField } from '@/components/forms/form-field';
 import { QrCode, Mail, ArrowLeft } from 'lucide-react';
 import { PROJECT_CODENAME } from '@skyra/shared';
@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
                   id="email"
                   type="email"
                   placeholder="name@company.com"
-                  leftIcon={<Mail className="h-4 w-4" />}
+                  leadingIcon={<Mail className="h-4 w-4" />}
                   required
                 />
               </FormField>

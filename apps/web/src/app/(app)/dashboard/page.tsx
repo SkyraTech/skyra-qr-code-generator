@@ -1,13 +1,13 @@
 'use client';
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge } from '@skyra/ui';
 import * as React from 'react';
 import Link from 'next/link';
 import { PageHeader } from '@/components/layout/page-header';
 import { PageContainer, DashboardGrid, Section } from '@/components/layout/page-container';
 import { StatsCard } from '@/components/layout/stats-card';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
+
+
 import { QrCode, Plus, BarChart3, Users, Zap, ExternalLink, ArrowRight } from 'lucide-react';
 import { formatNumber, formatCurrency } from '@/lib/formatters';
 import { ROUTES } from '@/config/routes';
@@ -18,7 +18,7 @@ export default function WorkspaceDashboardPage() {
       <PageHeader
         title="Workspace Overview"
         description="Monitor active dynamic QR campaigns, scan telemetry, and team activity for Skyra Tech HQ."
-        badge={<Badge variant="default">Business Tier</Badge>}
+        badge={<Badge variant="neutral">Business Tier</Badge>}
         actions={
           <div className="flex items-center gap-2">
             <Link href={ROUTES.QR_CODES}>

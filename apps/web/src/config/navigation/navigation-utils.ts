@@ -31,7 +31,7 @@ function formatSegmentTitle(segment: string): string {
 /**
  * Derives hierarchical breadcrumbs automatically from the URL pathname.
  */
-export function getBreadcrumbsForRoute(pathname: string): BreadcrumbItem[] {
+export function getBreadcrumbForRoute(pathname: string): BreadcrumbItem[] {
   const segments = pathname.split('/').filter(Boolean);
   if (segments.length === 0) {
     return [{ label: 'Home' }];

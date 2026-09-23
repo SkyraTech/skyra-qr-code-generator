@@ -1,12 +1,12 @@
 'use client';
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, Badge, Button, Progress } from '@skyra/ui';
 import * as React from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { PageContainer, Section } from '@/components/layout/page-container';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+
+
+
+
 import { Check, CreditCard, ArrowRight } from 'lucide-react';
 import { formatCurrency } from '@/lib/formatters';
 
@@ -16,7 +16,7 @@ export default function WorkspaceBillingPage() {
       <PageHeader
         title="Billing & Subscription"
         description="Manage your workspace subscription plan, payment methods, and invoice receipts."
-        badge={<Badge variant="default">Business Tier</Badge>}
+        badge={<Badge variant="neutral">Business Tier</Badge>}
         actions={
           <Button size="sm" variant="outline" leftIcon={<CreditCard className="h-3.5 w-3.5" />}>
             Manage Payment Methods
@@ -49,7 +49,7 @@ export default function WorkspaceBillingPage() {
                   <span className="text-muted-foreground">Dynamic QR Code Quota</span>
                   <span className="font-semibold text-foreground">42 / 100 QRs</span>
                 </div>
-                <Progress value={42} variant="default" />
+                <Progress value={42} variant="primary" />
               </div>
 
               <div>

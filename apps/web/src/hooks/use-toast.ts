@@ -1,3 +1,5 @@
+'use client';
+import { toast as platformToast, useToast as platformUseToast } from '@skyra/ui';
 /**
  * @platform-shim — migrated to @skyra/ui
  *
@@ -6,9 +8,6 @@
  * This shim maps QR's toast API (variant, description)
  * to Platform's API (type, message).
  */
-'use client';
-
-import { toast as platformToast, useToast as platformUseToast } from '@skyra/ui';
 import type { ToastOptions as PlatformToastOptions } from '@skyra/ui';
 
 export type ToastVariant = 'default' | 'success' | 'destructive' | 'warning' | 'info';

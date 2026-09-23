@@ -1,5 +1,5 @@
 'use client';
-
+import { Tooltip } from '@skyra/ui';
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -17,7 +17,7 @@ import { NavigationSection } from '@/config/navigation/navigation-types';
 import { userNavigation } from '@/config/navigation/user-navigation';
 import { adminNavigation } from '@/config/navigation/admin-navigation';
 import { isRouteActive } from '@/config/navigation/navigation-utils';
-import { Tooltip } from '@/components/ui/tooltip';
+
 
 export interface SidebarProps {
   variant?: 'user' | 'admin';
@@ -166,7 +166,7 @@ export function Sidebar({
 
                 if (sidebarCollapsed) {
                   return (
-                    <Tooltip key={item.href} content={item.label} side="right">
+                    <Tooltip key={item.href} content={item.label} >
                       {linkContent}
                     </Tooltip>
                   );

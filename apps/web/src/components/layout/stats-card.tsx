@@ -1,6 +1,7 @@
+import { Card, Skeleton } from '@skyra/ui';
 import * as React from 'react';
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+
+
 import { cn } from '@/lib/utils';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 

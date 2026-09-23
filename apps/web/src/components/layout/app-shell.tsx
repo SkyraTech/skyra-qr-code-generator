@@ -1,5 +1,4 @@
 'use client';
-
 import * as React from 'react';
 import { Sidebar } from './sidebar';
 import { TopNavigation } from './top-navigation';

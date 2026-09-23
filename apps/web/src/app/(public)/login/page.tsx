@@ -1,10 +1,10 @@
 'use client';
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, Button, Input } from '@skyra/ui';
 import * as React from 'react';
 import Link from 'next/link';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
+
+
 import { FormField } from '@/components/forms/form-field';
 import { QrCode, ArrowRight, Lock, Mail } from 'lucide-react';
 import { PROJECT_CODENAME } from '@skyra/shared';
@@ -52,7 +52,7 @@ export default function LoginPage() {
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  leftIcon={<Mail className="h-4 w-4" />}
+                  leadingIcon={<Mail className="h-4 w-4" />}
                   required
                 />
               </FormField>
@@ -77,7 +77,7 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  leftIcon={<Lock className="h-4 w-4" />}
+                  leadingIcon={<Lock className="h-4 w-4" />}
                   required
                 />
               </FormField>

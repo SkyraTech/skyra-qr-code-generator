@@ -1,7 +1,6 @@
 'use client';
-
 import * as React from 'react';
-import { ErrorState } from '@/components/feedback/error-state';
+import { ErrorState } from '@skyra/ui';
 import { PageContainer } from '@/components/layout/page-container';
 
 export default function AdminError({
@@ -20,7 +19,7 @@ export default function AdminError({
       <div className="py-12">
         <ErrorState
           title="Administrative Console Error"
-          message={error.message || 'An unexpected error occurred within the administration panel.'}
+          description={error.message || 'An unexpected error occurred within the administration panel.'}
           onRetry={reset}
         />
       </div>

@@ -1,8 +1,8 @@
 import React from 'react';
 
-export interface ColumnDef<TData> {
+export interface Column<TData> {
   id: string;
-  header: React.ReactNode | ((props: { column: ColumnDef<TData> }) => React.ReactNode);
+  header: React.ReactNode | ((props: { column: Column<TData> }) => React.ReactNode);
   accessorKey?: keyof TData;
   accessorFn?: (row: TData) => unknown;
   cell?: (props: { row: TData; value: unknown }) => React.ReactNode;
@@ -24,7 +24,7 @@ export interface PaginationState {
 }
 
 export interface DataTableProps<TData> {
-  columns: ColumnDef<TData>[];
+  columns: Column<TData>[];
   data: TData[];
   keyField?: keyof TData;
   isLoading?: boolean;

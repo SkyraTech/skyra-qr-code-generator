@@ -1,11 +1,11 @@
 'use client';
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Switch, Input } from '@skyra/ui';
 import * as React from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
+
+
+
 import { FormField } from '@/components/forms/form-field';
-import { Input } from '@/components/ui/input';
+
 import { ShieldCheck, Smartphone } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -32,7 +32,7 @@ export default function SecuritySettingsPage() {
             </div>
             <Switch
               checked={twoFactorEnabled}
-              onCheckedChange={(c) => {
+              onChange={(c) => {
                 setTwoFactorEnabled(c);
                 toast({
                   title: c ? '2FA Enabled' : '2FA Disabled',

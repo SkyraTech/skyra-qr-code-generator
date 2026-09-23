@@ -1,13 +1,12 @@
 'use client';
-
-import { LoadingState } from '@/components/feedback/loading-state';
+import { PageLoader } from '@skyra/ui';
 import { PageContainer } from '@/components/layout/page-container';
 
 export default function AppLoading() {
   return (
     <PageContainer>
       <div className="flex items-center justify-center py-20">
-        <LoadingState message="Loading workspace data..." size="lg" />
+        <PageLoader message="Loading workspace data..."  />
       </div>
     </PageContainer>
   );

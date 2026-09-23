@@ -1,5 +1,4 @@
 'use client';
-
 import * as React from 'react';
 import { ConfirmDialog as PlatformConfirmDialog } from '@skyra/dialogs';
 import type { ConfirmDialogProps as PlatformConfirmDialogProps } from '@skyra/dialogs';

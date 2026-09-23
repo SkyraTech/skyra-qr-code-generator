@@ -1,5 +1,5 @@
 'use client';
-
+import { Button, Badge } from '@skyra/ui';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
@@ -25,8 +25,8 @@ import {
   COMMERCIAL_PRODUCT_NAME,
   HealthCheckResponse,
 } from '@skyra/shared';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
+
 import { ROUTES } from '@/config/routes';
 
 export default function HomePage() {
@@ -75,7 +75,7 @@ export default function HomePage() {
                 <span className="font-bold text-lg text-foreground tracking-tight">
                   {PROJECT_CODENAME}
                 </span>
-                <Badge variant="default" size="sm">
+                <Badge variant="neutral" size="sm">
                   Codename
                 </Badge>
               </div>
@@ -124,7 +124,7 @@ export default function HomePage() {
               </Button>
             </Link>
             <Link href={ROUTES.UI_PREVIEW}>
-              <Button variant="secondary">
+              <Button variant="outline">
                 UI Design System Preview
               </Button>
             </Link>
