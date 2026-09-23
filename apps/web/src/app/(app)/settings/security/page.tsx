@@ -4,7 +4,6 @@ import * as React from 'react';
 
 
 
-import { FormField } from '@/components/forms/form-field';
 
 import { ShieldCheck, Smartphone } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -44,12 +43,12 @@ export default function SecuritySettingsPage() {
 
           <div className="pt-2 space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Change Password</h4>
-            <FormField label="Current Password">
-              <Input type="password" placeholder="••••••••••••" />
-            </FormField>
-            <FormField label="New Password">
-              <Input type="password" placeholder="••••••••••••" />
-            </FormField>
+            <Input type="password" placeholder="••••••••••••" 
+                  label="Current Password"
+                />
+            <Input type="password" placeholder="••••••••••••" 
+                  label="New Password"
+                />
             <Button size="sm" variant="outline">Update Password</Button>
           </div>
         </CardContent>

@@ -6,7 +6,6 @@ import { PageContainer, Section } from '@/components/layout/page-container';
 
 
 
-import { FormField } from '@/components/forms/form-field';
 
 import { Save } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -63,12 +62,12 @@ export default function AdminSettingsPage() {
               <CardDescription>Default throttling applied to non-whitelisted IP addresses.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 pt-0">
-              <FormField label="Default Edge POP Throttle (Req / min)">
-                <Input defaultValue="120" type="number" />
-              </FormField>
-              <FormField label="JWT Access Token Lifetime (Minutes)">
-                <Input defaultValue="15" type="number" />
-              </FormField>
+              <Input defaultValue="120" type="number" 
+                  label="Default Edge POP Throttle (Req / min)"
+                />
+              <Input defaultValue="15" type="number" 
+                  label="JWT Access Token Lifetime (Minutes)"
+                />
             </CardContent>
           </Card>
         </div>

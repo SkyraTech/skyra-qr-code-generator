@@ -5,7 +5,6 @@ import Link from 'next/link';
 
 
 
-import { FormField } from '@/components/forms/form-field';
 import { QrCode, ArrowRight, Lock, Mail, Building, User } from 'lucide-react';
 import { PROJECT_CODENAME } from '@skyra/shared';
 import { ROUTES } from '@/config/routes';
@@ -41,43 +40,43 @@ export default function RegisterPage() {
         <Card className="shadow-lg border-border">
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4 pt-6">
-              <FormField label="Full Name" required htmlFor="name">
-                <Input
+              <Input
                   id="name"
                   placeholder="Jane Doe"
                   leadingIcon={<User className="h-4 w-4" />}
                   required
+                
+                  label="Full Name"
                 />
-              </FormField>
 
-              <FormField label="Company / Workspace Name" required htmlFor="company">
-                <Input
+              <Input
                   id="company"
                   placeholder="Acme International"
                   leadingIcon={<Building className="h-4 w-4" />}
                   required
+                
+                  label="Company / Workspace Name"
                 />
-              </FormField>
 
-              <FormField label="Work Email" required htmlFor="email">
-                <Input
+              <Input
                   id="email"
                   type="email"
                   placeholder="jane@acme.com"
                   leadingIcon={<Mail className="h-4 w-4" />}
                   required
+                
+                  label="Work Email"
                 />
-              </FormField>
 
-              <FormField label="Password" required htmlFor="password">
-                <Input
+              <Input
                   id="password"
                   type="password"
                   placeholder="At least 12 characters"
                   leadingIcon={<Lock className="h-4 w-4" />}
                   required
+                
+                  label="Password"
                 />
-              </FormField>
             </CardContent>
 
             <CardFooter className="flex flex-col space-y-3 pt-2">

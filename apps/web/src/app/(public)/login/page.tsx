@@ -5,7 +5,6 @@ import Link from 'next/link';
 
 
 
-import { FormField } from '@/components/forms/form-field';
 import { QrCode, ArrowRight, Lock, Mail } from 'lucide-react';
 import { PROJECT_CODENAME } from '@skyra/shared';
 import { ROUTES } from '@/config/routes';
@@ -45,8 +44,7 @@ export default function LoginPage() {
         <Card className="shadow-lg border-border">
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4 pt-6">
-              <FormField label="Work Email" required htmlFor="email">
-                <Input
+              <Input
                   id="email"
                   type="email"
                   placeholder="name@company.com"
@@ -54,33 +52,11 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   leadingIcon={<Mail className="h-4 w-4" />}
                   required
+                
+                  label="Work Email"
                 />
-              </FormField>
 
-              <FormField
-                label="Password"
-                required
-                htmlFor="password"
-                description={
-                  <div className="flex justify-end pt-1">
-                    <Link
-                      href={ROUTES.FORGOT_PASSWORD}
-                      className="text-primary hover:underline font-medium text-[11px]"
-                    >
-                      Forgot password?
-                    </Link>
-                  </div>
-                }
-              >
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  leadingIcon={<Lock className="h-4 w-4" />}
-                  required
-                />
-              </FormField>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} leadingIcon={<Lock className="h-4 w-4" />} required label="Password" description={<div className="flex justify-end pt-1"><Link href={ROUTES.FORGOT_PASSWORD} className="text-primary hover:underline font-medium text-[11px]">Forgot password?</Link></div>} />
             </CardContent>
 
             <CardFooter className="flex flex-col space-y-3 pt-2">

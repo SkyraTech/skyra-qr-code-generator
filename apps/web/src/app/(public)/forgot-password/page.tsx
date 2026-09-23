@@ -5,7 +5,6 @@ import Link from 'next/link';
 
 
 
-import { FormField } from '@/components/forms/form-field';
 import { QrCode, Mail, ArrowLeft } from 'lucide-react';
 import { PROJECT_CODENAME } from '@skyra/shared';
 import { ROUTES } from '@/config/routes';
@@ -49,15 +48,15 @@ export default function ForgotPasswordPage() {
         <Card className="shadow-lg border-border">
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4 pt-6">
-              <FormField label="Registered Email" required htmlFor="email">
-                <Input
+              <Input
                   id="email"
                   type="email"
                   placeholder="name@company.com"
                   leadingIcon={<Mail className="h-4 w-4" />}
                   required
+                
+                  label="Registered Email"
                 />
-              </FormField>
             </CardContent>
 
             <CardFooter className="flex flex-col space-y-3 pt-2">

@@ -4,7 +4,6 @@ import * as React from 'react';
 
 
 
-import { FormField } from '@/components/forms/form-field';
 
 import { toast } from '@/hooks/use-toast';
 
@@ -28,13 +27,16 @@ export default function ProfileSettingsPage() {
             </div>
           </div>
 
-          <FormField label="Full Name" required htmlFor="name">
-            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-          </FormField>
+          <Input id="name" value={name} onChange={(e) => setName(e.target.value)} 
+                  label="Full Name"
+                  required
+                />
 
-          <FormField label="Email Address" required htmlFor="email" description="Used for security verification and login notifications.">
-            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </FormField>
+          <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} 
+                  label="Email Address"
+                  description="Used for security verification and login notifications."
+                  required
+                />
         </CardContent>
         <CardFooter className="flex justify-end border-t border-border pt-4">
           <Button size="sm" onClick={() => toast({ title: 'Profile updated', variant: 'success' })}>
