@@ -80,15 +80,15 @@ export function Sidebar({
             </div>
             {!sidebarCollapsed && (
               <div className="flex flex-col">
-                <span className="text-sm font-bold tracking-tight text-foreground">
+                <span className="text-sm font-bold tracking-tight text-white">
                   {PROJECT_CODENAME}
                 </span>
                 <span
                   className={cn(
                     'text-[10px] uppercase tracking-widest font-semibold',
                     variant === 'admin'
-                      ? 'text-amber-600 dark:text-amber-400 font-bold'
-                      : 'text-muted-foreground'
+                      ? 'text-amber-400'
+                      : 'text-white/60'
                   )}
                 >
                   {variant === 'admin' ? 'Platform Admin' : 'Workspace App'}
@@ -101,14 +101,14 @@ export function Sidebar({
         {/* Workspace Context Switcher (Placeholder) */}
         {!sidebarCollapsed && variant === 'user' && (
           <div className="px-3 pt-3 pb-1">
-            <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs">
+            <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs">
               <div className="flex items-center gap-2 truncate">
-                <Building className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="font-semibold truncate text-foreground">
+                <Building className="h-3.5 w-3.5 text-white/60 shrink-0" />
+                <span className="font-semibold truncate text-sidebar-foreground">
                   Skyra Tech HQ
                 </span>
               </div>
-              <span className="text-[10px] text-muted-foreground font-mono bg-background px-1.5 py-0.5 rounded border border-border">
+              <span className="text-[10px] text-white/60 font-mono bg-white/10 px-1.5 py-0.5 rounded border border-white/15">
                 Prod
               </span>
             </div>
@@ -120,7 +120,7 @@ export function Sidebar({
           {sections.map((section, sIdx) => (
             <div key={sIdx} className="space-y-1">
               {!sidebarCollapsed && section.title && (
-                <h4 className="px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80 mb-2">
+                <h4 className="px-3 text-[11px] font-semibold uppercase tracking-wider text-white/50 mb-2">
                   {section.title}
                 </h4>
               )}
@@ -138,17 +138,17 @@ export function Sidebar({
                     href={item.href}
                     onClick={() => setSidebarOpen(false)}
                     className={cn(
-                      'group flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      'group flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30',
                       isActive
-                        ? 'bg-primary/10 text-primary font-semibold'
-                        : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
+                        ? 'bg-white/15 text-white font-semibold'
+                        : 'text-white/75 hover:bg-white/10 hover:text-white',
                       sidebarCollapsed && 'justify-center px-2'
                     )}
                   >
                     <span
                       className={cn(
                         'shrink-0 transition-transform group-hover:scale-110',
-                        isActive && 'text-primary'
+                        isActive && 'text-white'
                       )}
                     >
                       <IconComponent className="h-4 w-4" />
@@ -157,7 +157,7 @@ export function Sidebar({
                       <span className="flex-1 truncate">{item.label}</span>
                     )}
                     {!sidebarCollapsed && item.badge && (
-                      <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-bold text-primary">
+                      <span className="rounded bg-white/20 px-1.5 py-0.5 text-[10px] font-bold text-white">
                         {item.badge}
                       </span>
                     )}
@@ -182,7 +182,7 @@ export function Sidebar({
         <div className="hidden lg:flex items-center justify-between p-3 border-t border-sidebar-border">
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="flex h-8 w-full items-center justify-center gap-2 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground text-xs font-medium transition-colors"
+            className="flex h-8 w-full items-center justify-center gap-2 rounded-md hover:bg-white/10 text-white/75 hover:text-white text-xs font-medium transition-colors"
             aria-label={
               sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'
             }

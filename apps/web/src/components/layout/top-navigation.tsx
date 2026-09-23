@@ -136,7 +136,7 @@ export function TopNavigation({
 
         {/* Theme Toggle */}
         <DropdownMenu
-          align="end"
+          align="center"
           trigger={
             <Button
               variant="ghost"
