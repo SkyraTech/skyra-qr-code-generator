@@ -69,9 +69,11 @@ export class QrController {
   @RequirePermission('qr:read')
   async getMatrix(@Req() req: FastifyRequest, @Param('id') id: string) {
     const workspaceContext = req['workspace'] as AuthorizationContext;
-    // Base URL would typically come from configuration/environment variables
-    // Hardcoding for now since we just need to satisfy the foundation layer
-    const appDomainUrl = 'https://skyra.qr';
+    let appDomainUrl = process.env.QR_PUBLIC_BASE_URL || 'http://localhost:3000';
+    // Remove trailing slash if present
+    if (appDomainUrl.endsWith('/')) {
+      appDomainUrl = appDomainUrl.slice(0, -1);
+    }
     return this.qrService.generateMatrix(workspaceContext.workspaceId, id, appDomainUrl);
   }
 }

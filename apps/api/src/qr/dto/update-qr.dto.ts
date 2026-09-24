@@ -12,7 +12,7 @@ export class UpdateQrDto {
   @IsIn(['ACTIVE', 'PAUSED', 'ARCHIVED'])
   status?: QrStatus;
 
-  @IsUrl()
+  @IsUrl({ require_protocol: true, protocols: ['http', 'https'] })
   @IsOptional()
   targetUrl?: string;
 }

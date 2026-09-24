@@ -4,6 +4,8 @@ import { QrRepository } from './repositories/qr.repository';
 import { QrController } from './qr.controller';
 import { DatabaseService } from '../database/database.service';
 import { CreateQrDto } from './dto/create-qr.dto';
+import { PublicQrController } from './public-qr.controller';
+import { validate } from 'class-validator';
 
 async function runTests() {
   console.log('🧪 Starting Phase 2A QR Domain Unit Tests...\n');
@@ -64,9 +66,69 @@ async function runTests() {
     }
   } as unknown as DatabaseService;
 
+  let attemptCount = 0;
+  const mockDbWithCollision = {
+    qrCode: {
+      create: async (args: any) => {
+        attemptCount++;
+        if (attemptCount === 1) {
+          // Simulate collision on first attempt
+          const error: any = new Error('Unique constraint failed');
+          error.code = 'P2002';
+          error.meta = { target: ['short_code'] };
+          throw error;
+        }
+        return {
+          id: 'qr-2',
+          workspaceId: args.data.workspaceId,
+          shortCode: 'abcd1235',
+          name: args.data.name,
+          isDynamic: args.data.isDynamic,
+          destination: { targetUrl: args.data.destination?.create?.targetUrl },
+        };
+      },
+      findUnique: async (args: any) => {
+        if (args.where.shortCode === 'valid123') {
+          return {
+            id: 'qr-3',
+            shortCode: 'valid123',
+            status: 'ACTIVE',
+            deletedAt: null,
+            expiresAt: null,
+            destination: { targetUrl: 'https://skyra.tech' }
+          };
+        }
+        if (args.where.shortCode === 'deleted1') {
+          return {
+            id: 'qr-4',
+            shortCode: 'deleted1',
+            status: 'ACTIVE',
+            deletedAt: new Date(),
+            destination: { targetUrl: 'https://skyra.tech' }
+          };
+        }
+        if (args.where.shortCode === 'expired1') {
+          return {
+            id: 'qr-5',
+            shortCode: 'expired1',
+            status: 'ACTIVE',
+            deletedAt: null,
+            expiresAt: new Date(Date.now() - 10000), // Past
+            destination: { targetUrl: 'https://skyra.tech' }
+          };
+        }
+        return null;
+      }
+    },
+  } as unknown as DatabaseService;
+
   const repo = new QrRepository(mockDb);
   const service = new QrService(repo);
   const controller = new QrController(service);
+  
+  const repoCollision = new QrRepository(mockDbWithCollision);
+  const serviceCollision = new QrService(repoCollision);
+  const publicController = new PublicQrController(serviceCollision);
 
   const mockReqAuth = (workspaceId: string, role: string) => ({
     user: { id: 'u-1' },
@@ -165,6 +227,72 @@ async function runTests() {
     assert(false, 'Create Static QR without target URL should throw BadRequest');
   } catch (e) {
     assert(e instanceof BadRequestException, 'Invalid QR domain input causes validation failure');
+  }
+
+  // Test 13: ShortCode Collision Retry
+  try {
+    const dto: CreateQrDto = { name: 'Collision QR', qrTypeId: 'DYNAMIC_URL', targetUrl: 'https://example.com', isDynamic: true };
+    const res = await serviceCollision.create('ws-1', 'u-1', dto);
+    assert(res.id === 'qr-2' && attemptCount === 2, 'Create QR succeeds after shortCode collision retry');
+  } catch(e) {
+    console.error(e);
+    assert(false, 'Create QR failed during collision retry');
+  }
+
+  // Test 14: URL Validation (Valid)
+  try {
+    const dto = new CreateQrDto();
+    dto.name = 'Valid URL';
+    dto.qrTypeId = 'DYNAMIC_URL';
+    dto.targetUrl = 'https://example.com';
+    const errors = await validate(dto);
+    assert(errors.length === 0, 'URL Validation accepts https://');
+  } catch(e) {
+    assert(false, 'URL Validation threw');
+  }
+
+  // Test 15: URL Validation (Invalid JS)
+  try {
+    const dto = new CreateQrDto();
+    dto.name = 'Invalid URL';
+    dto.qrTypeId = 'DYNAMIC_URL';
+    dto.targetUrl = 'javascript:alert(1)';
+    const errors = await validate(dto);
+    assert(errors.length > 0 && errors[0].property === 'targetUrl', 'URL Validation rejects javascript:');
+  } catch(e) {
+    assert(false, 'URL Validation threw');
+  }
+
+  // Test 16: Public Resolution - Valid Active QR
+  try {
+    const res = await publicController.resolvePublicQR('valid123');
+    assert(res.data.targetUrl === 'https://skyra.tech', 'Public resolver successfully returns destination for valid QR');
+  } catch(e) {
+    assert(false, 'Public resolver threw error for valid QR');
+  }
+
+  // Test 17: Public Resolution - Deleted QR
+  try {
+    await publicController.resolvePublicQR('deleted1');
+    assert(false, 'Public resolver should not resolve deleted QR');
+  } catch(e) {
+    assert(e instanceof NotFoundException, 'Public resolver rejects deleted QR');
+  }
+
+  // Test 18: Public Resolution - Expired QR
+  try {
+    await publicController.resolvePublicQR('expired1');
+    assert(false, 'Public resolver should not resolve expired QR');
+  } catch(e) {
+    assert(e instanceof BadRequestException, 'Public resolver rejects expired QR');
+  }
+
+  // Test 19: Public Resolution - Not Found
+  try {
+    await publicController.resolvePublicQR('nonexistent');
+    assert(false, 'Public resolver should not resolve nonexistent QR');
+  } catch(e) {
+    assert(e instanceof NotFoundException, 'Public resolver rejects nonexistent shortCode');
   }
 
   console.log(`\nResults: ${passed} passed, ${failed} failed.\n`);

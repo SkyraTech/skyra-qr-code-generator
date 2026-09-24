@@ -10,6 +10,7 @@ import type { Column } from '@skyra/data-table';
 
 import { QrCode, Plus, Download, Filter } from 'lucide-react';
 import { formatDate, formatNumber } from '@/lib/formatters';
+import Link from 'next/link';
 
 interface QRCodeRecord {
   id: string;
@@ -123,9 +124,11 @@ export default function QRCodesPage() {
             <Button variant="outline" size="sm" leftIcon={<Download className="h-3.5 w-3.5" />}>
               Export
             </Button>
-            <Button size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />}>
-              Create Dynamic QR
-            </Button>
+            <Link href="/qr-codes/create">
+              <Button size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />}>
+                Create QR Code
+              </Button>
+            </Link>
           </div>
         }
       />

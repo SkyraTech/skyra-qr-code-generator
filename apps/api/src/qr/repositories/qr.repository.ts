@@ -14,22 +14,50 @@ export class QrRepository {
     userId: string,
     dto: CreateQrDto,
   ): Promise<QrCode & { destination: any }> {
-    const shortCode = randomBytes(4).toString('hex'); // Simple 8-char hex code for now
+    let attempts = 0;
+    const maxAttempts = 3;
 
-    return this.database.qrCode.create({
-      data: {
-        workspaceId,
-        createdBy: userId,
-        name: dto.name,
-        qrTypeId: dto.qrTypeId,
-        isDynamic: dto.isDynamic ?? true,
-        shortCode,
-        status: 'ACTIVE',
-        destination: {
-          create: {
-            targetUrl: dto.targetUrl,
+    while (attempts < maxAttempts) {
+      try {
+        const shortCode = randomBytes(4).toString('hex');
+        
+        return await this.database.qrCode.create({
+          data: {
+            workspaceId,
+            createdBy: userId,
+            name: dto.name,
+            qrTypeId: dto.qrTypeId,
+            isDynamic: dto.isDynamic ?? true,
+            shortCode,
+            status: 'ACTIVE',
+            destination: {
+              create: {
+                targetUrl: dto.targetUrl,
+              },
+            },
           },
-        },
+          include: {
+            destination: true,
+          },
+        });
+      } catch (error: any) {
+        if (error.code === 'P2002' && error.meta?.target?.includes('short_code')) {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            throw new Error('Failed to generate a unique short code after maximum attempts.');
+          }
+          continue;
+        }
+        throw error;
+      }
+    }
+    throw new Error('Failed to create QR code.');
+  }
+
+  async findByShortCode(shortCode: string): Promise<(QrCode & { destination: any }) | null> {
+    return this.database.qrCode.findUnique({
+      where: {
+        shortCode,
       },
       include: {
         destination: true,

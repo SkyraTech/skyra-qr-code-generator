@@ -14,7 +14,7 @@ export class CreateQrDto {
   @IsOptional()
   isDynamic?: boolean = true;
 
-  @IsUrl()
+  @IsUrl({ require_protocol: true, protocols: ['http', 'https'] })
   @IsNotEmpty()
   targetUrl!: string;
 }

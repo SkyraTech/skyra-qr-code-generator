@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { QrRepository } from './repositories/qr.repository';
 import { CreateQrDto } from './dto/create-qr.dto';
 import { UpdateQrDto } from './dto/update-qr.dto';
-import { generateQRCode } from '@skyra/qr/src/generate';
+import { generateQRCode } from '@skyra/qr';
 
 @Injectable()
 export class QrService {
@@ -63,5 +63,27 @@ export class QrService {
 
     // Rely on @skyra/qr for the technical matrix generation
     return generateQRCode(payload, { errorCorrectionLevel: 'M' });
+  }
+
+  async resolvePublicQR(shortCode: string) {
+    const qr = await this.qrRepository.findByShortCode(shortCode);
+    
+    if (!qr || qr.deletedAt) {
+      throw new NotFoundException('QR Code not found.');
+    }
+    
+    if (qr.status !== 'ACTIVE') {
+      throw new BadRequestException('QR Code is not active.');
+    }
+    
+    if (qr.expiresAt && new Date() > qr.expiresAt) {
+      throw new BadRequestException('QR Code has expired.');
+    }
+    
+    if (!qr.destination || !qr.destination.targetUrl) {
+      throw new BadRequestException('QR Code has no valid destination.');
+    }
+    
+    return { targetUrl: qr.destination.targetUrl };
   }
 }
