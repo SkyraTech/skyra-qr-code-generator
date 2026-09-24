@@ -39,13 +39,27 @@ class ApiClient {
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
+      let token: string | undefined;
+      if (typeof window !== 'undefined') {
+        const { createClient } = await import('@/lib/supabase/client');
+        const supabase = createClient();
+        const { data } = await supabase.auth.getSession();
+        token = data.session?.access_token;
+      }
+
+      const finalHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        ...(headers as Record<string, string>),
+      };
+
+      if (token && !finalHeaders['Authorization']) {
+        finalHeaders['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(url, {
         ...fetchOptions,
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          ...headers,
-        },
+        headers: finalHeaders,
         signal: controller.signal,
         credentials: 'include', // Includes HttpOnly session cookies
       });
