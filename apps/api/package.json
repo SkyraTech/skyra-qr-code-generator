@@ -15,7 +15,9 @@
     "prisma:deploy": "prisma migrate deploy",
     "prisma:reset": "prisma migrate reset --force",
     "seed": "tsx prisma/seed.ts",
-    "test:db": "tsx prisma/verify.ts"
+    "test:db": "tsx prisma/verify.ts",
+    "test:workspace": "tsx src/workspace/workspace.spec.ts",
+    "test:authz": "tsx src/authz/authorization.spec.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
