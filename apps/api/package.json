@@ -17,7 +17,8 @@
     "seed": "tsx prisma/seed.ts",
     "test:db": "tsx prisma/verify.ts",
     "test:workspace": "tsx src/workspace/workspace.spec.ts",
-    "test:authz": "tsx src/authz/authorization.spec.ts"
+    "test:authz": "tsx src/authz/authorization.spec.ts",
+    "test:qr": "tsx src/qr/qr.spec.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -29,6 +30,7 @@
     "@nestjs/platform-fastify": "^10.4.1",
     "@prisma/client": "^5.22.0",
     "@skyra/shared": "workspace:*",
+    "@skyra/qr": "link:../../../skyra-platform/packages/qr",
     "@supabase/server": "^1.5.2",
     "@supabase/supabase-js": "^2.48.1",
     "class-transformer": "^0.5.1",

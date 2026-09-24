@@ -5,6 +5,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { WorkspaceModule } from './workspace/workspace.module';
 import { AuthorizationModule } from './authz/authz.module';
+import { QrModule } from './qr/qr.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthorizationModule } from './authz/authz.module';
     AuthModule,
     WorkspaceModule,
     AuthorizationModule,
+    QrModule,
   ],
 })
 export class AppModule {}

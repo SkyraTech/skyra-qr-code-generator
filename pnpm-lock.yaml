@@ -38,6 +38,9 @@ importers:
       '@prisma/client':
         specifier: ^5.22.0
         version: 5.22.0(prisma@5.22.0)
+      '@skyra/qr':
+        specifier: link:../../../skyra-platform/packages/qr
+        version: link:../../../skyra-platform/packages/qr
       '@skyra/shared':
         specifier: workspace:*
         version: link:../../packages/shared
